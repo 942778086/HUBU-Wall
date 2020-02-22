@@ -1,0 +1,38 @@
+{
+  "pages": [
+    "pages/demand/main",
+    "pages/conversion/main",
+    "pages/me/main",
+    "pages/social/main"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#A2C6E7",
+    "navigationBarTitleText": "湖北大学万能墙",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#999",
+    "backgroundColor": "#fafafa",
+    "selectedColor": "#333",
+    "borderStyle": "white",
+    "list": [{
+      "text": "需求",
+      "pagePath": "pages/demand/main",
+      "iconPath": "static/tabs/home.png",
+      "selectedIconPath": "static/tabs/home-active.png"
+    }, {
+      "text": "会话",
+      "pagePath": "pages/conversion/main",
+      "iconPath": "static/tabs/conversation.png",
+      "selectedIconPath": "static/tabs/conversation-active.png"
+    },{
+      "text": "圈子",
+      "pagePath": "pages/social/main",
+      "iconPath": "static/tabs/mine.png",
+      "selectedIconPath": "static/tabs/mine-active.png"
+    }
+    ],
+    "position": "bottom"
+  }
+}
