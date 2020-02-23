@@ -33,6 +33,7 @@ app.listen({ port: config.port }, () =>
 ioServer.listen(config.wsPort, () => {
     console.log(`🚀 WebSocket Server is running at http://localhost:${config.wsPort}`)
 })
+// 程序遇到未捕获异常将不会退出
 process.on('uncaughtException', function (err) {
     console.log('Caught exception: ' + err);
 });
