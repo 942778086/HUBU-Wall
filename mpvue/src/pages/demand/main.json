@@ -8,5 +8,7 @@
     "node_modules"
   ],
   "usingComponents": {
+    "i-button": "../../../../static/iview/button/index",
+    "i-drawer": "../../../../static/iview/drawer/index"
   }
 }
