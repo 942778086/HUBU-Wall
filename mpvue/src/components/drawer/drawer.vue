@@ -1,16 +1,19 @@
 <template>
   <div class="drawer-whole">
     <div class="drawer-content">
-      <div class="avaRoom">
+      <div class="ava-room">
         <img class="info-ava" v-if="waitRender" :src="avatorURL" />
+        <p class="info-name">{{ username }}</p>
       </div>
       <div class="drawer-divider"></div>
       <div class="info-menu">
-        <div class="info-list myinfo" @click="nav('myInfo')">我的信息</div>
-        <div class="info-list myrelease" @click="nav('myRelease')">我发布的需求</div>
-        <div class="info-list myaccept" @click="nav('myAccept')">我接取的需求</div>
-        <div class="info-list contactdev" @click="nav('contactDev')">联系开发者</div>
-        <div class="info-list aboutus" @click="nav('aboutUs')">关于我们</div>
+        <i-cell-group>
+          <i-cell title="我的信息" @click="nav('myInfo')" is-link></i-cell>
+          <i-cell title="我发布的需求" @click="nav('myRelease')" is-link></i-cell>
+          <i-cell title="我接取的需求" @click="nav('myAccept')" is-link></i-cell>
+          <i-cell title="联系开发者" @click="nav('contactDev')" is-link></i-cell>
+          <i-cell title="关于我们" @click="nav('aboutUs')" is-link></i-cell>
+        </i-cell-group>
       </div>
     </div>
     <div class="drawer-maskerlayer" @click="closeDrawer"></div>
@@ -22,9 +25,10 @@ export default {
   data() {
     return {
       waitRender: true,
-    }
+      username: "wujianx"
+    };
   },
-  props: ['avatorURL'],
+  props: ["avatorURL"],
   methods: {
     nav(route) {
       wx.navigateTo({
@@ -61,24 +65,38 @@ export default {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.637);
 }
-.avaRoom {
+.ava-room {
   display: flex;
+  flex-direction: column;
   justify-content: center;
 }
 .info-ava {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  border: 1px solid rgb(12, 108, 172);
+  border: 2px solid rgb(12, 108, 172);
   margin: 10px auto 0 auto;
+}
+.info-name {
+  margin: 10px auto 0 auto;
+  padding: 0 5px 0 5px;
+  color: white;
+  border: 1px 1px 0 1px;
+  border-block-color: white;
+  
+  background-color: rgb(12, 108, 172);
 }
 .drawer-divider {
   width: 100%;
   height: 1px;
-  margin: 10px 0 10px 0;
   background-color: rgb(83, 83, 83);
 }
 .info-list {
   padding: 10px;
+}
+</style>
+<style>
+.drawer-whole .i-card-header-thumb {
+  border-radius: 50%;
 }
 </style>

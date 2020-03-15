@@ -9,6 +9,8 @@
   ],
   "usingComponents": {
     "i-button": "../../../../static/iview/button/index",
-    "i-drawer": "../../../../static/iview/drawer/index"
+    "i-cell-group": "../../../../static/iview/cell-group/index",
+    "i-cell": "../../../../static/iview/cell/index",
+    "i-card": "../../../../static/iview/card/index"
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="conversion">
     <Me></Me>
-    twoHand
+    conversion
   </div>
 </template>
 
