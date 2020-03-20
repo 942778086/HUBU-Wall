@@ -3,12 +3,6 @@
     <i-modal :visible=visible :actions=action @click='handleClick'>
       <view>请点击下方确定按钮进行登录，否则无法正常使用该程序的功能</view>
     </i-modal>
-    <Badge :count="100">
-        <a href="#" class="demo-badge"></a>
-    </Badge>
-    <Badge :count="1000" overflow-count="999">
-        <a href="#" class="demo-badge"></a>
-    </Badge>
   </div>
 </template>
 
@@ -19,12 +13,13 @@
         message: '',
         visible: true,
         action: [
-            {
-                name: '确定',
-                color: '#19be6b',
-            }
+          {
+              name: '确定',
+              color: '#19be6b',
+          }
         ],
-        userNewLogin: ''
+        userNewLogin: '',
+        userInfo: ''
       }
     },
     methods: {
@@ -38,25 +33,10 @@
               wx.getUserInfo({
                 success: res => {
                   console.log('用户信息：',res)
-                  console.log(res.userInfo)
                   // 把userInfo存到vuex里面
                   this.$store.state.userInfo = res.userInfo
-                  // 把userInfo和openId存到数据库
-                  this.$fly.post('/login/newUser',{
-                    nickName: res.userInfo.nickName,
-                    avatar:  res.userInfo.avatarUrl,
-                    wxId: this.$store.state.openId,
-                    userNewLogin: this.userNewLogin,
-                    phoneNum: '', // 因为userInfo中没有phoneNum，所以暂时传空
-                    studentNum: '',
-                    gender: res.userInfo.gender,
-                    city: res.userInfo.city,
-                    province: res.userInfo.province
-                  })
-                    .then(res => {
-                      console.log('增加用户')
-                      console.log(res)
-                    })
+                  this.userInfo = res.userInfo
+                  this.addUser()
                 }
               })
             }
@@ -69,6 +49,24 @@
             this.message = res.data
           })
       },
+      // 添加user
+      addUser () {
+        this.$fly.post('/login/newUser',{
+          nickName: this.userInfo.nickName,
+          avatar:  this.userInfo.avatarUrl,
+          wxId: this.$store.state.openId,
+          userNewLogin: this.userNewLogin,
+          phoneNum: '', // 因为userInfo中没有phoneNum，所以暂时传空
+          studentNum: '',
+          gender: this.userInfo.gender,
+          city: this.userInfo.city,
+          province: this.userInfo.province
+        })
+          .then(res => {
+            console.log('增加用户')
+            console.log(res)
+          })
+      },
       // 获取登录时间，并转换成datetime型
       getTime () {
         const date = new Date()
@@ -78,7 +76,6 @@
     created () {
       this.getTime()
       this.testNetwork()
-      console.log(this.$store.state.loginFlag)
       this.visible = this.$store.state.loginFlag
     },
     mounted () {
