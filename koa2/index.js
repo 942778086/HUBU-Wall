@@ -20,8 +20,7 @@ app.use(logAsync())
 // 静态资源服务器
 app.use(server(__dirname, '/upload'))
 // 挂载路由
-app.use(router.routes())
-   .use(router.allowedMethods())
+app.use(router.routes()).use(router.allowedMethods())
 // websocket 服务器
 io.on('connection', (socket) => {
     socketFunc(socket)

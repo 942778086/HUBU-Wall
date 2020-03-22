@@ -15,9 +15,9 @@ const config = {
      * 数据库配置
      */
     database: {
-        database: 'hubu_wall',
+        database: 'HuBu-Wall',
         user: 'root',
-        password: '20001022ab@',
+        password: '12345678',
         port: '3306',
         host: 'localhost'
     }
