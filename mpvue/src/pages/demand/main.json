@@ -9,7 +9,6 @@
   ],
   "usingComponents": {
     "i-button": "../../../../static/dist/button/index",
-    "i-modal": "../../../../static/dist/modal/index",
-    "i-message": "../../../../static/dist/message/index"
+    "i-modal": "../../../../static/dist/modal/index"
   }
 }

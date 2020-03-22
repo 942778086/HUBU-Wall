@@ -3,6 +3,11 @@
     "pages/demand/main",
     "pages/conversion/main",
     "pages/me/main",
+    "pages/me/myInfo/main",
+    "pages/me/myRelease/main",
+    "pages/me/myAccept/main",
+    "pages/me/contactDev/main",
+    "pages/me/aboutUs/main",
     "pages/social/main"
   ],
   "window": {

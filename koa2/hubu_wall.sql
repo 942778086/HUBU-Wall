@@ -19,7 +19,6 @@
 -- Table structure for table `comment`
 --
 
-DROP TABLE IF EXISTS `comment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `comment` (
@@ -46,7 +45,6 @@ UNLOCK TABLES;
 -- Table structure for table `demand`
 --
 
-DROP TABLE IF EXISTS `demand`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `demand` (
@@ -75,7 +73,6 @@ UNLOCK TABLES;
 -- Table structure for table `message`
 --
 
-DROP TABLE IF EXISTS `message`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `message` (
@@ -101,7 +98,6 @@ UNLOCK TABLES;
 -- Table structure for table `notification`
 --
 
-DROP TABLE IF EXISTS `notification`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `notification` (
@@ -129,7 +125,6 @@ UNLOCK TABLES;
 -- Table structure for table `nynamic`
 --
 
-DROP TABLE IF EXISTS `nynamic`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `nynamic` (
@@ -159,7 +154,6 @@ UNLOCK TABLES;
 -- Table structure for table `user`
 --
 
-DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
