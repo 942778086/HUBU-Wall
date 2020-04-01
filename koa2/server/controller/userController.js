@@ -40,6 +40,6 @@ const userService = require('../service/userService')
     deleteUser: async function(ctx) {
         let id = ctx.request.query.id
         ctx.body = await userService.deleteUser(id)
-    }
+    },
 }
 module.exports = userController

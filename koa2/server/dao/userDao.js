@@ -6,7 +6,7 @@ const userDao = {
           return query(`select * from user limit ${num},6`)
      },
      getUser(id) {
-          return query(`select * from user where id = ${id};`)
+          return query(`select * from user where user_id = ${id};`)
      },
      newUser(data) {
           return query(`insert into user(id,name,age,address) values(0,'${data.name}',${data.age},'${data.address};')`)
