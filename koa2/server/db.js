@@ -5,9 +5,10 @@ const pool = mysql.createPool({
     host     :  database.host,
     user     :  database.user,
     password :  database.password,
-    database :  database.database
+    database :  database.database,
+    port     :  database.port,
 })
-
+ 
 
 let query = function( sql, values ) {
     return new Promise((resolve, reject) => {

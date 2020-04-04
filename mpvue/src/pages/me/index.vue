@@ -2,10 +2,10 @@
   <div class="whole">
     <div class="me">
       <div class="avator" @click="showInfoList">
-        <img class="avator" :src="avatorURL" />
+        <image class="avator" v-if="waitData" :src="avatorUrl" />
       </div>
     </div>
-    <drawer :avatorURL="avatorURL" v-if="drawerVsible" @closeDrawer="closeDrawer"></drawer>
+    <drawer v-if="drawerVsible" @closeDrawer="closeDrawer"></drawer>
   </div>
 </template>
 
@@ -16,8 +16,9 @@ export default {
   data() {
     return {
       drawerVsible: false,
-      avatorURL:
-        "https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIIWgISmZ2564fN6LjT9H11buh7CRc6A8YgOdL8ftZ00cqGjcj4ksd2ZEQURzmwy6dPgogKlSbRSw/132",
+      timer: null,
+      waitData: false,
+      avatorUrl: ""
     };
   },
   components: { drawer },
@@ -26,12 +27,28 @@ export default {
       this.drawerVsible = true;
     },
     closeDrawer() {
-      console.log(11)
       this.drawerVsible = false;
     },
-    menuRoute(event) {
-      console.log(event)
+    /**
+     * 处理小程序图片
+     * 注意：小程序中图片使用image标签，而非img标签
+     *      使用v-if，延迟图片加载，以防尚未获取url，就已经构建了image
+     */
+    getAva() {
+      this.timer = setInterval(() => {
+        if (!this.avatorUrl) {
+          if (this.$store.state.userInfo.avatar) {
+            this.avatorUrl = this.$store.state.userInfo.avatar;
+            this.waitData = true;
+          }
+        } else {
+          this.timer = null;
+        }
+      }, 500);
     }
+  },
+  created() {
+    this.getAva();
   }
 };
 </script>

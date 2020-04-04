@@ -5,15 +5,9 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    nowPart: '',
-    userInfo: '',
-    openId: '',
-    loginFlag: true
+    userInfo: ''
   },
   mutations: {
-    changeNowPart (state, part) {
-      state.nowPart = part
-    }
   }
 })
 

@@ -2,7 +2,7 @@
   <div class="drawer-whole">
     <div class="drawer-content">
       <div class="ava-room">
-        <img class="info-ava" v-if="waitRender" :src="avatorURL" />
+        <image class="info-ava" v-if="waitRender" :src="avatorURL" />
         <p class="info-name">{{ username }}</p>
       </div>
       <div class="drawer-divider"></div>
@@ -25,10 +25,14 @@ export default {
   data() {
     return {
       waitRender: true,
-      username: "wujianx"
+      avatorURL: "",
     };
   },
-  props: ["avatorURL"],
+  computed: {
+    "username"() {
+      return this.$store.state.userInfo.nick_name
+    }
+  },
   methods: {
     nav(route) {
       wx.navigateTo({
@@ -38,6 +42,9 @@ export default {
     closeDrawer() {
       this.$emit("closeDrawer");
     }
+  },
+  created() {
+    this.avatorURL = this.$store.state.userInfo.avatar
   }
 };
 </script>
