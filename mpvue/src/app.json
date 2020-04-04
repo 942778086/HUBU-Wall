@@ -8,7 +8,8 @@
     "pages/me/myAccept/main",
     "pages/me/contactDev/main",
     "pages/me/aboutUs/main",
-    "pages/social/main"
+    "pages/social/main",
+    "pages/publish/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
