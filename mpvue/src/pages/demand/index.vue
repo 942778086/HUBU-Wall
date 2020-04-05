@@ -1,20 +1,20 @@
 <template>
   <div class="demand">
     <Me></Me>
-    conversion
+    <LeadLogin></LeadLogin>
   </div>
 </template>
 
 <script>
-import { formatDatetime } from "../../utils/formatDatetime";
 import Me from "../me/index";
+import LeadLogin from "../../components/leadLogin/index"
 
 export default {
   data() {
     return {
     };
   },
-  components: { Me },
+  components: { Me, LeadLogin },
   methods: {
   },
   mounted() {

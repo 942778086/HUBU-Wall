@@ -9,7 +9,7 @@
     "pages/me/contactDev/main",
     "pages/me/aboutUs/main",
     "pages/social/main",
-    "pages/publish/main"
+    "pages/social/publish/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

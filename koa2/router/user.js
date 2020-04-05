@@ -1,6 +1,4 @@
 const router = require('koa-router')()
-// import userService from '../server/userService'
-const userController = require('../server/controller/userController')
 const baseController = require('../server/common/baseController')
 
 /**

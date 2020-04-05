@@ -11,7 +11,6 @@ import Me from "../me/index";
     data() {},
     components: { Me },
     mounted () {
-      this.$store.commit("changeNowPart", "conversion")
     }
   }
 </script>
