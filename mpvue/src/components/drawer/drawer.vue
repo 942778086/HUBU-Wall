@@ -25,12 +25,12 @@ export default {
   data() {
     return {
       waitRender: true,
-      avatorURL: "",
+      avatorURL: ""
     };
   },
   computed: {
-    "username"() {
-      return this.$store.state.userInfo.nick_name
+    username() {
+      return this.$store.state.userInfo.nick_name;
     }
   },
   methods: {
@@ -44,7 +44,7 @@ export default {
     }
   },
   created() {
-    this.avatorURL = this.$store.state.userInfo.avatar
+    this.avatorURL = this.$store.state.userInfo.avatar;
   }
 };
 </script>
@@ -65,12 +65,12 @@ export default {
 .drawer-content {
   height: 100%;
   width: 75%;
-  background-color: #f8f4ed;
+  background: linear-gradient(to bottom, #7f7fd5, #86a8e7, #91eae4);
 }
 .drawer-maskerlayer {
   width: 25%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.637);
+  background-color: rgba(113, 124, 128, 0.637);
 }
 .ava-room {
   display: flex;
@@ -81,7 +81,7 @@ export default {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  border: 2px solid rgb(12, 108, 172);
+  border: 3px solid #91eae4;
   margin: 10px auto 0 auto;
 }
 .info-name {
@@ -90,8 +90,7 @@ export default {
   color: white;
   border: 1px 1px 0 1px;
   border-block-color: white;
-  
-  background-color: rgb(12, 108, 172);
+  /* background-color: #86a8e7; */
 }
 .drawer-divider {
   width: 100%;

@@ -54,8 +54,9 @@ module.exports = baseService = {
                 }
             }
         } else {
-            for (let i = 0; i < keysArr.length; i++) {
-                if (i === keysArr.length - 2) {
+            let length = keysArr.length;
+            for (let i = 0; i < length; i++) {
+                if (i === length - 2) {
                     // varchar/char 有引号包裹
                     if (typeof valuesArr[i] === 'string') {
                         field = field + keysArr[i] + '=' + '\'' + valuesArr[i] + '\''

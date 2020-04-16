@@ -37,3 +37,10 @@ ioServer.listen(config.wsPort, () => {
 process.on('uncaughtException', function (err) {
     console.log('Caught exception: ' + err);
 });
+
+app.use((ctx) => {
+    console.log( ctx.method, ctx.header.host + ctx.url )
+    if (ctx.request.URL === "/user/getAll") {
+        ctx.body = "success"
+    }
+})

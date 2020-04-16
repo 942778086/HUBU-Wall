@@ -55,6 +55,7 @@ export default {
 
 <style scoped>
 .me {
+  position: fixed;
   display: flex;
   top: 0;
   width: 100%;
@@ -62,6 +63,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   border-bottom: 1px solid gray;
+  background-color: rgb(241, 241, 241);
 }
 .avator {
   width: 40px;
@@ -73,6 +75,5 @@ export default {
   width: 260px;
   height: 1000px;
   padding: 10px;
-  background-color: rgb(226, 226, 226);
 }
 </style>

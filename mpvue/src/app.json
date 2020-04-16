@@ -1,7 +1,7 @@
 {
   "pages": [
     "pages/demand/main",
-    "pages/conversion/main",
+    "pages/conversation/main",
     "pages/me/main",
     "pages/me/myInfo/main",
     "pages/me/myRelease/main",
@@ -29,7 +29,7 @@
       "selectedIconPath": "static/tabs/home-active.png"
     }, {
       "text": "会话",
-      "pagePath": "pages/conversion/main",
+      "pagePath": "pages/conversation/main",
       "iconPath": "static/tabs/conversation.png",
       "selectedIconPath": "static/tabs/conversation-active.png"
     },{
