@@ -1,0 +1,10 @@
+{
+    "usingComponents": {
+      "i-progress": "../../../static/iview/progress/index",
+      "i-input": "../../../static/iview/input/index",
+      "i-button": "../../../static/iview/button/index",
+      "i-action-sheet": "../../../static/iview/action-sheet/index",
+      "i-message": "../../../static/iview/message/index"
+    }
+  }
+  

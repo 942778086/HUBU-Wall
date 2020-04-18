@@ -110,10 +110,6 @@ export default {
               Key: filename,
               FilePath: filePath,
               onProgress: function(info) {
-                console.log("info", JSON.stringify(info));
-                // 这里要完善：上传图片时要显示上传进度
-                console.log(JSON.stringify(info.percent));
-                that.percent = JSON.stringify(info.percent) * 100;
               }
             },
             function(err, data) {

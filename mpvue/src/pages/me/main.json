@@ -1,4 +1,8 @@
 {
   "usingComponents": {
+    "i-progress": "../../../../static/iview/progress/index",
+    "i-switch": "../../../../static/iview/switch/index",
+    "i-input": "../../../../static/iview/input/index",
+    "i-button": "../../../../static/iview/button/index"
   }
 }
