@@ -1,18 +1,35 @@
 <template>
   <div class="social">
     <Me></Me>
+    <i-message id="message" />
     <div class="dynamics-room">
       <div class="dynamics-item" v-for="(item, index) in dynamics" :key="index">
+        <div class="delete-room">
+          <image
+            v-if="item.creator === userId"
+            @click="deleteDynamic(item.id)"
+            class="icon"
+            src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNTg3NDQ4MTk4MTIxIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjM0MTciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PC9zdHlsZT48L2RlZnM+PHBhdGggZD0iTTIxLjMzMzMzMyAwdjEwMjQiIGZpbGw9IiIgcC1pZD0iMzQxOCI+PC9wYXRoPjxwYXRoIGQ9Ik00Mi42NjY2NjcgMHYxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0MTkiPjwvcGF0aD48cGF0aCBkPSJNNjQgMHYxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0MjAiPjwvcGF0aD48cGF0aCBkPSJNODUuMzMzMzMzIDB2MTAyNCIgZmlsbD0iIiBwLWlkPSIzNDIxIj48L3BhdGg+PHBhdGggZD0iTTEwNi42NjY2NjcgMHYxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0MjIiPjwvcGF0aD48cGF0aCBkPSJNMTI4IDB2MTAyNCIgZmlsbD0iIiBwLWlkPSIzNDIzIj48L3BhdGg+PHBhdGggZD0iTTE0OS4zMzMzMzMgMHYxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0MjQiPjwvcGF0aD48cGF0aCBkPSJNMTcwLjY2NjY2NyAwdjEwMjQiIGZpbGw9IiIgcC1pZD0iMzQyNSI+PC9wYXRoPjxwYXRoIGQ9Ik0xOTIgMHYxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0MjYiPjwvcGF0aD48cGF0aCBkPSJNMjEzLjMzMzMzMyAwdjEwMjQiIGZpbGw9IiIgcC1pZD0iMzQyNyI+PC9wYXRoPjxwYXRoIGQ9Ik0yMzQuNjY2NjY3IDB2MTAyNCIgZmlsbD0iIiBwLWlkPSIzNDI4Ij48L3BhdGg+PHBhdGggZD0iTTI1NiAwdjEwMjQiIGZpbGw9IiIgcC1pZD0iMzQyOSI+PC9wYXRoPjxwYXRoIGQ9Ik0yNzcuMzMzMzMzIDB2MTAyNCIgZmlsbD0iIiBwLWlkPSIzNDMwIj48L3BhdGg+PHBhdGggZD0iTTI5OC42NjY2NjcgMHYxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0MzEiPjwvcGF0aD48cGF0aCBkPSJNMzIwIDB2MTAyNCIgZmlsbD0iIiBwLWlkPSIzNDMyIj48L3BhdGg+PHBhdGggZD0iTTM0MS4zMzMzMzMgMHYxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0MzMiPjwvcGF0aD48cGF0aCBkPSJNMzYyLjY2NjY2NyAwdjEwMjQiIGZpbGw9IiIgcC1pZD0iMzQzNCI+PC9wYXRoPjxwYXRoIGQ9Ik0zODQgMHYxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0MzUiPjwvcGF0aD48cGF0aCBkPSJNNDA1LjMzMzMzMyAwdjEwMjQiIGZpbGw9IiIgcC1pZD0iMzQzNiI+PC9wYXRoPjxwYXRoIGQ9Ik00MjYuNjY2NjY3IDB2MTAyNCIgZmlsbD0iIiBwLWlkPSIzNDM3Ij48L3BhdGg+PHBhdGggZD0iTTQ0OCAwdjEwMjQiIGZpbGw9IiIgcC1pZD0iMzQzOCI+PC9wYXRoPjxwYXRoIGQ9Ik00NjkuMzMzMzMzIDB2MTAyNCIgZmlsbD0iIiBwLWlkPSIzNDM5Ij48L3BhdGg+PHBhdGggZD0iTTQ5MC42NjY2NjcgMHYxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0NDAiPjwvcGF0aD48cGF0aCBkPSJNNTEyIDB2MTAyNCIgZmlsbD0iIiBwLWlkPSIzNDQxIj48L3BhdGg+PHBhdGggZD0iTTUzMy4zMzMzMzMgMHYxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0NDIiPjwvcGF0aD48cGF0aCBkPSJNNTU0LjY2NjY2NyAwdjEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ0MyI+PC9wYXRoPjxwYXRoIGQ9Ik01NzYgMHYxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0NDQiPjwvcGF0aD48cGF0aCBkPSJNNTk3LjMzMzMzMyAwdjEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ0NSI+PC9wYXRoPjxwYXRoIGQ9Ik02MTguNjY2NjY3IDB2MTAyNCIgZmlsbD0iIiBwLWlkPSIzNDQ2Ij48L3BhdGg+PHBhdGggZD0iTTY0MCAwdjEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ0NyI+PC9wYXRoPjxwYXRoIGQ9Ik02NjEuMzMzMzMzIDB2MTAyNCIgZmlsbD0iIiBwLWlkPSIzNDQ4Ij48L3BhdGg+PHBhdGggZD0iTTY4Mi42NjY2NjcgMHYxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0NDkiPjwvcGF0aD48cGF0aCBkPSJNNzA0IDB2MTAyNCIgZmlsbD0iIiBwLWlkPSIzNDUwIj48L3BhdGg+PHBhdGggZD0iTTcyNS4zMzMzMzMgMHYxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0NTEiPjwvcGF0aD48cGF0aCBkPSJNNzQ2LjY2NjY2NyAwdjEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ1MiI+PC9wYXRoPjxwYXRoIGQ9Ik03NjggMHYxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0NTMiPjwvcGF0aD48cGF0aCBkPSJNNzg5LjMzMzMzMyAwdjEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ1NCI+PC9wYXRoPjxwYXRoIGQ9Ik04MTAuNjY2NjY3IDB2MTAyNCIgZmlsbD0iIiBwLWlkPSIzNDU1Ij48L3BhdGg+PHBhdGggZD0iTTgzMiAwdjEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ1NiI+PC9wYXRoPjxwYXRoIGQ9Ik04NTMuMzMzMzMzIDB2MTAyNCIgZmlsbD0iIiBwLWlkPSIzNDU3Ij48L3BhdGg+PHBhdGggZD0iTTg3NC42NjY2NjcgMHYxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0NTgiPjwvcGF0aD48cGF0aCBkPSJNODk2IDB2MTAyNCIgZmlsbD0iIiBwLWlkPSIzNDU5Ij48L3BhdGg+PHBhdGggZD0iTTkxNy4zMzMzMzMgMHYxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0NjAiPjwvcGF0aD48cGF0aCBkPSJNOTM4LjY2NjY2NyAwdjEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ2MSI+PC9wYXRoPjxwYXRoIGQ9Ik05NjAgMHYxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0NjIiPjwvcGF0aD48cGF0aCBkPSJNOTgxLjMzMzMzMyAwdjEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ2MyI+PC9wYXRoPjxwYXRoIGQ9Ik0xMDAyLjY2NjY2NyAwdjEwMjRNMCAyMS4zMzMzMzNoMTAyNCIgZmlsbD0iIiBwLWlkPSIzNDY0Ij48L3BhdGg+PHBhdGggZD0iTTAgNDIuNjY2NjY3aDEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ2NSI+PC9wYXRoPjxwYXRoIGQ9Ik0wIDY0aDEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ2NiI+PC9wYXRoPjxwYXRoIGQ9Ik0wIDg1LjMzMzMzM2gxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0NjciPjwvcGF0aD48cGF0aCBkPSJNMCAxMDYuNjY2NjY3aDEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ2OCI+PC9wYXRoPjxwYXRoIGQ9Ik0wIDEyOGgxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0NjkiPjwvcGF0aD48cGF0aCBkPSJNMCAxNDkuMzMzMzMzaDEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ3MCI+PC9wYXRoPjxwYXRoIGQ9Ik0wIDE3MC42NjY2NjdoMTAyNCIgZmlsbD0iIiBwLWlkPSIzNDcxIj48L3BhdGg+PHBhdGggZD0iTTAgMTkyaDEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ3MiI+PC9wYXRoPjxwYXRoIGQ9Ik0wIDIxMy4zMzMzMzNoMTAyNCIgZmlsbD0iIiBwLWlkPSIzNDczIj48L3BhdGg+PHBhdGggZD0iTTAgMjM0LjY2NjY2N2gxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0NzQiPjwvcGF0aD48cGF0aCBkPSJNMCAyNTZoMTAyNCIgZmlsbD0iIiBwLWlkPSIzNDc1Ij48L3BhdGg+PHBhdGggZD0iTTAgMjc3LjMzMzMzM2gxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0NzYiPjwvcGF0aD48cGF0aCBkPSJNMCAyOTguNjY2NjY3aDEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ3NyI+PC9wYXRoPjxwYXRoIGQ9Ik0wIDMyMGgxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0NzgiPjwvcGF0aD48cGF0aCBkPSJNMCAzNDEuMzMzMzMzaDEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ3OSI+PC9wYXRoPjxwYXRoIGQ9Ik0wIDM2Mi42NjY2NjdoMTAyNCIgZmlsbD0iIiBwLWlkPSIzNDgwIj48L3BhdGg+PHBhdGggZD0iTTAgMzg0aDEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ4MSI+PC9wYXRoPjxwYXRoIGQ9Ik0wIDQwNS4zMzMzMzNoMTAyNCIgZmlsbD0iIiBwLWlkPSIzNDgyIj48L3BhdGg+PHBhdGggZD0iTTAgNDI2LjY2NjY2N2gxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0ODMiPjwvcGF0aD48cGF0aCBkPSJNMCA0NDhoMTAyNCIgZmlsbD0iIiBwLWlkPSIzNDg0Ij48L3BhdGg+PHBhdGggZD0iTTAgNDY5LjMzMzMzM2gxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0ODUiPjwvcGF0aD48cGF0aCBkPSJNMCA0OTAuNjY2NjY3aDEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ4NiI+PC9wYXRoPjxwYXRoIGQ9Ik0wIDUxMmgxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0ODciPjwvcGF0aD48cGF0aCBkPSJNMCA1MzMuMzMzMzMzaDEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ4OCI+PC9wYXRoPjxwYXRoIGQ9Ik0wIDU1NC42NjY2NjdoMTAyNCIgZmlsbD0iIiBwLWlkPSIzNDg5Ij48L3BhdGg+PHBhdGggZD0iTTAgNTc2aDEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ5MCI+PC9wYXRoPjxwYXRoIGQ9Ik0wIDU5Ny4zMzMzMzNoMTAyNCIgZmlsbD0iIiBwLWlkPSIzNDkxIj48L3BhdGg+PHBhdGggZD0iTTAgNjE4LjY2NjY2N2gxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0OTIiPjwvcGF0aD48cGF0aCBkPSJNMCA2NDBoMTAyNCIgZmlsbD0iIiBwLWlkPSIzNDkzIj48L3BhdGg+PHBhdGggZD0iTTAgNjYxLjMzMzMzM2gxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0OTQiPjwvcGF0aD48cGF0aCBkPSJNMCA2ODIuNjY2NjY3aDEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ5NSI+PC9wYXRoPjxwYXRoIGQ9Ik0wIDcwNGgxMDI0IiBmaWxsPSIiIHAtaWQ9IjM0OTYiPjwvcGF0aD48cGF0aCBkPSJNMCA3MjUuMzMzMzMzaDEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ5NyI+PC9wYXRoPjxwYXRoIGQ9Ik0wIDc0Ni42NjY2NjdoMTAyNCIgZmlsbD0iIiBwLWlkPSIzNDk4Ij48L3BhdGg+PHBhdGggZD0iTTAgNzY4aDEwMjQiIGZpbGw9IiIgcC1pZD0iMzQ5OSI+PC9wYXRoPjxwYXRoIGQ9Ik0wIDc4OS4zMzMzMzNoMTAyNCIgZmlsbD0iIiBwLWlkPSIzNTAwIj48L3BhdGg+PHBhdGggZD0iTTAgODEwLjY2NjY2N2gxMDI0IiBmaWxsPSIiIHAtaWQ9IjM1MDEiPjwvcGF0aD48cGF0aCBkPSJNMCA4MzJoMTAyNCIgZmlsbD0iIiBwLWlkPSIzNTAyIj48L3BhdGg+PHBhdGggZD0iTTAgODUzLjMzMzMzM2gxMDI0IiBmaWxsPSIiIHAtaWQ9IjM1MDMiPjwvcGF0aD48cGF0aCBkPSJNMCA4NzQuNjY2NjY3aDEwMjQiIGZpbGw9IiIgcC1pZD0iMzUwNCI+PC9wYXRoPjxwYXRoIGQ9Ik0wIDg5NmgxMDI0IiBmaWxsPSIiIHAtaWQ9IjM1MDUiPjwvcGF0aD48cGF0aCBkPSJNMCA5MTcuMzMzMzMzaDEwMjQiIGZpbGw9IiIgcC1pZD0iMzUwNiI+PC9wYXRoPjxwYXRoIGQ9Ik0wIDkzOC42NjY2NjdoMTAyNCIgZmlsbD0iIiBwLWlkPSIzNTA3Ij48L3BhdGg+PHBhdGggZD0iTTAgOTYwaDEwMjQiIGZpbGw9IiIgcC1pZD0iMzUwOCI+PC9wYXRoPjxwYXRoIGQ9Ik0wIDk4MS4zMzMzMzNoMTAyNCIgZmlsbD0iIiBwLWlkPSIzNTA5Ij48L3BhdGg+PHBhdGggZD0iTTAgMTAwMi42NjY2NjdoMTAyNCIgZmlsbD0iIiBwLWlkPSIzNTEwIj48L3BhdGg+PHBhdGggZD0iTTgxMCAyNzRMNTcyIDUxMmwyMzggMjM4LTYwIDYwTDUxMiA1NzIgMjc0IDgxMGwtNjAtNjBMNDUyIDUxMiAyMTQgMjc0bDYwLTYwTDUxMiA0NTJsMjM4LTIzOHoiIGZpbGw9IiIgcC1pZD0iMzUxMSI+PC9wYXRoPjwvc3ZnPg=="
+          />
+        </div>
         <div class="title-room">
           <div class="ava-room" style="height:100%;">
             <image class="ava" :src="item.user_ava" />
           </div>
-          <div class="name-room">{{ item.username }}</div>
+          <div class="right-room">
+            <div class="name-room">{{ item.username }}</div>
+            <div class="time-room">{{ item.create_time }}</div>
+          </div>
         </div>
         <div class="content-room">{{ item.article }}</div>
         <div v-if="item.picture.length > 15">
           <div class="single-img-room">
-            <image @click="showImg(item.picture)" :src="item.picture" />
+            <image
+              class="single-img"
+              mode="widthFix"
+              @click="showImg(item.picture)"
+              :src="item.picture"
+            />
           </div>
         </div>
         <div class="mul-img-room" v-else>
@@ -48,13 +65,43 @@
             />
             {{ item.like_count }}
           </div>
-          <div @click="navComment(item.id)" class="comment-room other-item">
+          <div class="comment-room other-item">
             <image
               class="icon"
               src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNTg2OTE5MjI1NzUzIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjMxMTAiIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PC9zdHlsZT48L2RlZnM+PHBhdGggZD0iTTEwMjQgNTEycTAgOTkuNDI0LTY4LjU3NiAxODMuNzEydC0xODYuMjcyIDEzMy4xNTItMjU3LjE1MiA0OC44NjRxLTQwIDAtODIuODQ4LTQuNTc2LTExMy4xNTIgMTAwLTI2Mi44NDggMTM4LjI3Mi0yOCA4LTY1LjE1MiAxMi41NzYtOS43MjggMS4xNTItMTcuNDQtNS4xNTJ0LTEwLjAxNi0xNi41NzZsMC0wLjU3NnEtMS43MjgtMi4yNzItMC4yODgtNi44NDh0MS4xNTItNS43MjggMi41Ni01LjQ0bDMuNDI0LTUuMTUydDQtNC44NjQgNC41NzYtNS4xNTJxNC00LjU3NiAxNy43MjgtMTkuNzEydDE5LjcxMi0yMS43MjggMTcuNzI4LTIyLjU2IDE4LjU2LTI5LjE1MiAxNS40MjQtMzMuNzI4IDE0Ljg0OC00My40MjRxLTg5LjcyOC01MC44NDgtMTQxLjQ0LTEyNS43Mjh0LTUxLjcxMi0xNjAuNTc2cTAtNzQuMjcyIDQwLjU3Ni0xNDIuMDE2dDEwOS4xNTItMTE2Ljg2NCAxNjMuNDI0LTc4LjAxNiAxOTguODQ4LTI4Ljg2NHExMzkuNDI0IDAgMjU3LjE1MiA0OC44NjR0MTg2LjI3MiAxMzMuMTUyIDY4LjU3NiAxODMuNzEyeiIgcC1pZD0iMzExMSIgZmlsbD0iIzEyOTZkYiI+PC9wYXRoPjwvc3ZnPg=="
             />
             {{ item.comment_count }}
           </div>
+        </div>
+        <div class="input-room">
+          <input class="comment-input" @input="changeComment" :data-id="item.id" placeholder="评论" />
+          <button class="send-comment-btn" @click="sendRootComment(item);item.comment_count++">发送</button>
+        </div>
+        <div class="comment-room">
+          <i-collapse name>
+            <i-collapse-item title="查看所有评论" style="font-size:13px;color:gray" name="open">
+              <view slot="content">
+                <div
+                  class="rootComment"
+                  v-for="(commentItem, commentIndex) in item.comments"
+                  :key="commentIndex"
+                >
+                  <div
+                    @click="clickComment(item, commentItem)"
+                  >{{ commentItem.commentor }} : {{ commentItem.content }}</div>
+                  <div
+                    class="childComment"
+                    v-for="(childComment, childIndex) in commentItem.childComments"
+                    :key="childIndex"
+                  >
+                    <div
+                      @click="clickComment(item, commentItem)"
+                    >{{childComment.commentor}}回复{{ childComment.replayer }}: {{ childComment.content }}</div>
+                  </div>
+                </div>
+              </view>
+            </i-collapse-item>
+          </i-collapse>
         </div>
       </div>
     </div>
@@ -63,17 +110,56 @@
       @click="goPublish"
       src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNTg2OTIxMTQzNjcwIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjM1ODIiIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMzIiIGhlaWdodD0iMzIiPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PC9zdHlsZT48L2RlZnM+PHBhdGggZD0iTTUxMiAyMDkuNDU0NTQ1YzE2NS4yMzYzNjQgMCAzMDIuNTQ1NDU1IDEzNy4zMDkwOTEgMzAyLjU0NTQ1NSAzMDIuNTQ1NDU1cy0xMzcuMzA5MDkxIDMwMi41NDU0NTUtMzAyLjU0NTQ1NSAzMDIuNTQ1NDU1UzIwOS40NTQ1NDUgNjc3LjIzNjM2NCAyMDkuNDU0NTQ1IDUxMiAzNDYuNzYzNjM2IDIwOS40NTQ1NDUgNTEyIDIwOS40NTQ1NDV6IiBmaWxsPSIjRkM0OTREIiBwLWlkPSIzNTgzIj48L3BhdGg+PHBhdGggZD0iTTU5My40NTQ1NDUgMzI1LjgxODE4MmwtNDEuODkwOTA5IDQxLjg5MDkwOSA2Mi44MzYzNjQgNjIuODM2MzY0IDQxLjg5MDkwOS00MS44OTA5MS02Mi44MzYzNjQtNjIuODM2MzYzeiBtLTIxNC4xMDkwOSAyMTQuMTA5MDkxbC0xMS42MzYzNjQgNzQuNDcyNzI3IDc0LjQ3MjcyNy0xMS42MzYzNjQgMTQ2LjYxODE4Mi0xNDYuNjE4MTgxLTYyLjgzNjM2NC02Mi44MzYzNjQtMTQ2LjYxODE4MSAxNDYuNjE4MTgyek0zNzcuMDE4MTgyIDY2Ny45MjcyNzNoMjY5Ljk2MzYzNmM5LjMwOTA5MSAwIDEzLjk2MzYzNiA2Ljk4MTgxOCAxMy45NjM2MzcgMTMuOTYzNjM2IDAgOS4zMDkwOTEtNi45ODE4MTggMTMuOTYzNjM2LTEzLjk2MzYzNyAxMy45NjM2MzZIMzc3LjAxODE4MmMtOS4zMDkwOTEgMC0xMy45NjM2MzYtNi45ODE4MTgtMTMuOTYzNjM3LTEzLjk2MzYzNi0yLjMyNzI3My05LjMwOTA5MSA0LjY1NDU0NS0xMy45NjM2MzYgMTMuOTYzNjM3LTEzLjk2MzYzNnoiIGZpbGw9IiNGRkZGRkYiIHAtaWQ9IjM1ODQiPjwvcGF0aD48L3N2Zz4="
     />
+    <i-action-sheet
+      :visible="showDelete"
+      show-cancel
+      @cancel="showDelete = false"
+      :mask-closable="true"
+    >
+      <view slot="header" style="padding: 16px">
+        <view style="color: #444;font-size: 16px">确定吗？</view>
+        <text>删除后无法恢复哦</text>
+        <i-button @click="stillDelete" type="warning">删除此动态</i-button>
+      </view>
+    </i-action-sheet>
+    <i-action-sheet
+      :visible="showCommentAction"
+      show-cancel
+      @cancel="showCommentAction = false"
+      :mask-closable="true"
+    >
+      <view slot="header" style="padding: 16px">
+        <div class="input-room">
+          <input
+            class="comment-input child-comment-input"
+            @input="changeChildComment"
+            :placeholder="'回复' + lastClickComment.creator"
+          />
+          <button style="width: 20%;" class="send-comment-btn" @click="sendChildComment();">发送</button>
+        </div>
+      </view>
+    </i-action-sheet>
   </div>
 </template>
 
 <script>
 import Me from "../me/index";
+import { formatDatetime, formatDateFriendly } from "../../utils/formatDatetime";
+const { $Message } = require("../../../static/iview/base/index");
 
 export default {
   data() {
     return {
       dynamics: [],
-      likeList: []
+      likeList: [],
+      commentMap: new Map(),
+      childCommentMap: new Map(),
+      showDelete: false,
+      showCommentAction: false,
+      userId: 0,
+      deleteId: 0,
+      lastClickDynamic: {},
+      lastClickComment: {}
     };
   },
   components: { Me },
@@ -86,16 +172,23 @@ export default {
       this.likeList = [];
     }
     this.likeList = this.likeList.map(Number);
+    this.userId = this.$store.state.userInfo.id;
   },
   methods: {
+    /**
+     * 导航至发送动态
+     */
     goPublish() {
       wx.navigateTo({
         url: "/pages/social/publish/main"
       });
     },
+    /**
+     * 获取动态信息
+     */
     getDynamic() {
       this.$fly
-        .get("/dynamic/getAll?page=1")
+        .get("/dynamic/getAllIncludesComments?page=1")
         .then(res => {
           this.dynamics = res.data.data;
           this.dynamics.forEach(item => {
@@ -106,40 +199,145 @@ export default {
               item.picture = item.picture.split(",");
             }
             item.hadLiked = this.likeList.includes(item.id);
+            item.create_time = formatDateFriendly(new Date(item.create_time));
           });
-          console.log(this.dynamics);
         })
         .catch(err => {
           console.log(err);
         });
     },
+    /**
+     * 点赞方法
+     */
     like(dynamicId, like_count) {
       let likeList = wx.getStorageSync("likeList");
-
       if (likeList) {
         likeList = likeList.split(",");
       } else {
         likeList = [];
       }
       likeList = likeList.map(Number);
-      console.log(likeList);
       if (!likeList.includes(dynamicId)) {
         likeList.push(dynamicId);
-        console.log(likeList);
       }
       wx.setStorageSync("likeList", likeList.toString());
-      this.$fly.put('/dynamic/editDynamic', {
-        id: dynamicId,
-        like_count: like_count + 1
-      }).then(() => {
-      })
+      this.$fly
+        .put("/dynamic/editDynamic", {
+          id: dynamicId,
+          like_count: like_count + 1
+        })
+        .then(() => {});
     },
-    navComment(dynamicId) {},
+    /**
+     * 图片预览方法
+     */
     showImg(url, urls) {
       wx.previewImage({
         current: url,
         urls: urls || [url]
       });
+    },
+    /**
+     * 监听动态下根评论输入框
+     */
+    changeComment(e) {
+      const content = e.mp.detail.value;
+      const id = e.target.dataset.id;
+      this.commentMap.set(id, content);
+    },
+    /**
+     * 保存child评论输入框的内容
+     */
+    changeChildComment(e) {
+      this.childCommentMap.set(this.lastClickComment.id, e.mp.detail.value);
+    },
+    /**
+     * 评论点击后，更新lastClickComment，用于保存状态
+     */
+    clickComment(dynamic, comment) {
+      this.lastClickDynamic = dynamic;
+      this.lastClickComment = comment;
+      this.showCommentAction = true;
+    },
+    /**
+     * 发送根评论
+     */
+    sendRootComment(dynamic) {
+      this.$fly
+        .put("/dynamic/editDynamic", {
+          id: dynamicId,
+          comment_count: dynamic.comment_count + 1
+        })
+        .then(() => {});
+      this.$fly
+        .post("/comment/newComment", {
+          dynamic_id: dynamic.id,
+          parent_id: 0,
+          type: "",
+          commentor: this.$store.state.userInfo.nick_name,
+          replayer: "",
+          content: this.commentMap.get(dynamic.id),
+          gmt_create: formatDatetime(new Date())
+        })
+        .then(res => {
+          $Message({
+            content: "评论成功",
+            type: "success"
+          });
+          this.getDynamic();
+        });
+    },
+    /**
+     * 发送子评论
+     */
+    sendChildComment() {
+      let comment = this.lastClickComment;
+      let dynamic = this.lastClickDynamic;
+      this.$fly
+        .put("/dynamic/editDynamic", {
+          id: comment.dynamic_id,
+          comment_count: dynamic.comment_count + 1
+        })
+        .then(() => {});
+      this.$fly
+        .post("/comment/newComment", {
+          dynamic_id: dynamic.id,
+          parent_id: comment.id,
+          type: "",
+          commentor: this.$store.state.userInfo.nick_name,
+          replayer: comment.commentor,
+          content: this.childCommentMap.get(comment.id),
+          gmt_create: formatDatetime(new Date())
+        })
+        .then(res => {
+          this.showCommentAction = false;
+          $Message({
+            content: "评论成功",
+            type: "success"
+          });
+          this.getDynamic();
+        });
+    },
+    /**
+     * 删除动态过渡方法，保存删除动态的信息
+     */
+    deleteDynamic(id) {
+      this.showDelete = true;
+      this.deleteId = id;
+    },
+    /**
+     * 删除动态方法
+     */
+    stillDelete() {
+      this.$fly
+        .delete("dynamic/deleteDynamic?id=" + this.deleteId)
+        .then(res => {
+          $Message({
+            content: "删除成功",
+            type: "success"
+          });
+          this.getDynamic();
+        });
     }
   }
 };
@@ -167,6 +365,7 @@ export default {
   flex-direction: row;
   flex-wrap: nowrap;
   border: 0.5px solid gray;
+  border-radius: 15px;
   justify-content: space-between;
   background-color: #e9ddb6;
 }
@@ -177,6 +376,8 @@ export default {
 }
 .dynamics-item {
   margin-top: 20px;
+  border-top: 0.5px solid gray;
+  padding-top: 10px;
 }
 .publish {
   position: fixed;
@@ -193,8 +394,15 @@ export default {
   justify-content: flex-start;
 }
 .name-room {
-  height: 40px;
-  line-height: 40px;
+  height: 20px;
+  line-height: 20px;
+  margin-left: 10px;
+}
+.time-room {
+  color: gray;
+  font-size: 12px;
+  height: 20px;
+  line-height: 20px;
   margin-left: 10px;
 }
 .content-room {
@@ -215,5 +423,45 @@ export default {
   width: 31%;
   height: 100px;
   margin: 5px;
+}
+.collapsedItem {
+  vertical-align: middle;
+  color: gray;
+  font-size: 13px;
+}
+.rootComment {
+  color: black;
+  font-size: 14px;
+}
+.childComment {
+  font-size: 12px;
+  margin-left: 20px;
+  background-color: rgb(199, 199, 199);
+}
+.input-room {
+  margin: 5px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+.comment-input {
+  width: 75%;
+  height: 30px;
+  padding-left: 10px;
+  border: 0.5px solid rgb(111, 119, 110);
+  margin: 0 auto;
+  border-radius: 15px;
+}
+.send-comment-btn {
+  width: 15%;
+  height: 30px;
+  background-color: #2d8cf0;
+  font-size: 12px;
+  color: white;
+}
+.delete-room {
+  float: right;
+  margin-right: 2px;
 }
 </style>

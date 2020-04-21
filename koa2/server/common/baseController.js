@@ -9,7 +9,8 @@ module.exports = baseController = {
      */
     async getAll(tableName, ctx) {
         const page = ctx.request.query.page
-        ctx.body = await baseService.getAll(page, tableName)
+        const pageSize = ctx.request.query.pageSize
+        ctx.body = await baseService.getAll(page, tableName, pageSize)
     },
     /**
      * 主键查询

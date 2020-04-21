@@ -7,9 +7,9 @@ module.exports = baseService = {
      * @param tableName
      * @returns {Promise<void>}
      */
-    async getAll(page, tableName) {
+    async getAll(page, tableName, pageSize) {
         let data = {}
-        data.data = await baseDao.getAll(page, tableName)
+        data.data = await baseDao.getAll(page, tableName, pageSize)
         await baseDao.getCount(tableName)
             .then(res => {
                 data.count = res[0].count
@@ -33,6 +33,7 @@ module.exports = baseService = {
      */
     async getByFields(tableName, ctx) {
         let page = ctx.request.body.page || 1
+        let pageSize = ctx.request.body.pageSize
         let req = ctx.request.body
         let keysArr = Object.keys(req)
         let valuesArr = []
@@ -74,7 +75,7 @@ module.exports = baseService = {
                 }
             }
         }
-        return baseDao.selectByFields(page, tableName, field)
+        return baseDao.selectByFields(page, tableName, field, pageSize)
     },
     /**
      * 模糊查询

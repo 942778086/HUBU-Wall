@@ -64,6 +64,7 @@ export default {
   justify-content: center;
   border-bottom: 1px solid gray;
   background-color: rgb(241, 241, 241);
+  z-index: 999;
 }
 .avator {
   width: 40px;

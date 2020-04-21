@@ -3,16 +3,16 @@ const config = require('../../config')
 
 module.exports = baseDao = {
     // 分页
-    getAll (page, tableName) {
-        const num = (page - 1)*config.commonPageSize
-        console.log(`select * from ${tableName} limit ${num},${config.commonPageSize}`)
-        return query(`select * from ${tableName} limit ${num},${config.commonPageSize}`)
+    getAll (page, tableName, pageSize) {
+        const num = !pageSize ? (page - 1)*config.commonPageSize : (page - 1)*pageSize
+        console.log(`select * from ${tableName} limit ${num},${pageSize || config.commonPageSize}`)
+        return query(`select * from ${tableName} limit ${num},${pageSize || config.commonPageSize}`)
     },
-    // 非主键查询 + 分页
-    selectByFields (page, tableName, field) {
-        const num = (page - 1)*config.commonPageSize
-        console.log(`select * from ${tableName} where ${field} limit ${num},${config.commonPageSize}`)
-        return query(`select * from ${tableName} where ${field} limit ${num},${config.commonPageSize}`)
+    // 条件查询 + 分页
+    selectByFields (page, tableName, field, pageSize) {
+        const num = !pageSize ? (page - 1)*config.commonPageSize : (page - 1)*pageSize
+        console.log(`select * from ${tableName} where ${field} limit ${num},${pageSize || config.commonPageSize}`)
+        return query(`select * from ${tableName} where ${field} limit ${num},${pageSize || config.commonPageSize}`)
     },
     // 模糊查询 + 分页
     getByLike (page, tableName, key, value) {

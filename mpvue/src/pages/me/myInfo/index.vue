@@ -41,6 +41,7 @@
         <div @click="chooseDepart('商学院')" class="departList">商学院</div>
         <div @click="chooseDepart('数统学院')" class="departList">数统学院</div>
         <div @click="chooseDepart('资环学院')" class="departList">资环学院</div>
+        <div @click="chooseDepart('外国语学院')" class="departList">外国语学院</div>
       </div>
     </i-action-sheet>
     <i-message id="message" />
