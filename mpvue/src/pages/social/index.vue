@@ -265,7 +265,7 @@ export default {
     sendRootComment(dynamic) {
       this.$fly
         .put("/dynamic/editDynamic", {
-          id: dynamicId,
+          id: dynamic.id,
           comment_count: dynamic.comment_count + 1
         })
         .then(() => {});
