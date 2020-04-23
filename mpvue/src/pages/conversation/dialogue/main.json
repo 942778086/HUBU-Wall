@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "module": "commonjs",
+      "target": "es5",
+      "sourceMap": true
+    },
+    "exclude": [
+      "node_modules"
+    ],
+    "usingComponents": {
+      "i-input": "../../../../../static/iview/input/index",
+      "i-button": "../../../../../static/iview/button/index"
+    }
+  }
+  
