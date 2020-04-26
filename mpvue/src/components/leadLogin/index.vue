@@ -38,6 +38,7 @@ export default {
                   this.openId = res.data;
                 } else {
                   this.$store.state.userInfo = res.data;
+                  this.newWSConnect();
                   console.log(res.data);
                   wx.showToast({
                     icon: "none",
@@ -102,10 +103,12 @@ export default {
           studentNum: "",
           gender: userInfo.gender,
           city: userInfo.city,
-          province: userInfo.province
+          province: userInfo.province,
+          socket_id: ""
         })
         .then(res => {
           if (res.data.message === "添加用户成功") {
+            this.newWSConnect();
             wx.showToast({
               icon: "none",
               title: "欢迎体验！",
@@ -113,6 +116,11 @@ export default {
             });
           }
         });
+    },
+    newWSConnect() {
+      this.$socket.emit("newConnect", {
+        id: this.$store.state.userInfo.id
+      });
     }
   },
   created() {

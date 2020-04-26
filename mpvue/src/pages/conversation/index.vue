@@ -1,7 +1,6 @@
 <template>
   <div>
     <Me></Me>
-
     <div class="topBar">
       <div class="topBar1" :style="allLinkmanStyle" @click="allLinkman">所有联系人</div>
       <div class="topBar1" :style="presentDialogueStyle" @click="presentDialogue">当前会话</div>

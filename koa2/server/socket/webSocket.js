@@ -3,7 +3,6 @@ const baseService = require('../common/baseService')
 
 
 module.exports = socketFunc = (socket) => {
-    console.log('socket:',socket)
     // socket.on('connect', (data) => {
     socket.on('newConnect', (data) => {
         console.log('data')
