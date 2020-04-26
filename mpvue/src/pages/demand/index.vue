@@ -22,7 +22,7 @@
         <img class="demand-kind-icon" src="../../../static/images/parcle.png" />
         <p>代拿快递</p>
       </div>
-      <div class="demand-kind-item">
+      <div class="demand-kind-item" @click="lookOver">
         <img class="demand-kind-icon" src="../../../static/images/shareTheBill.png" />
         <p>二手书</p>
       </div>
@@ -90,6 +90,11 @@ export default {
   },
   created() {},
   methods: {
+    lookOver () {
+      wx.navigateTo({
+        url: '/pages/demand/cardLayout/main?demand_kind=1'
+      })
+    },
     navDemandKind(demandKind, isList) {
       wx.navigateTo({
         url: `/pages/demand/${
