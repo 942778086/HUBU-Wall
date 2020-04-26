@@ -72,9 +72,7 @@ export default {
         // this.demandsStyle = 'width:' + wx.getSystemInfoSync().windowWidth + 'px;background-image: linear-gradient(#b6fbff, #83a4d4);'
     },
     onLoad: function (options) {
-        // 在买方的角度才会有publisher_id
         this.demand_kind = options.demand_kind
-        // this.getAvatarByPublisherId()
         this.showPublishDiv = false
         this.getAll()
     },
@@ -86,8 +84,7 @@ export default {
                         console.log('res:',res)
                         this.demands = res.data.data
                         this.demands.forEach(item => {
-                            // item.date = formatDateFriendly(item.date)
-                            if (item.img_url[0] === "") {
+                            if (!item.img_url) {
                                 item.img_url = []
                             }
                             if (item.img_url.indexOf(",") > 0) {
@@ -194,9 +191,15 @@ export default {
         },
         queryDetails (item) {
             console.log('item',item)
-            wx.navigateTo({
-                url:`/pages/demand/details/main?receive_id=${item.publisher_id}&&name=${item.publisher_name}`
-            })
+            // 根据publisher_id拿到发布者的头像，传递过去
+            this.$fly.get(`/user/getUser?id=${item.publisher_id}`)
+                .then(res =>{
+                    console.log('res:',res)
+                    console.log(res.data[0].avatar)
+                    wx.navigateTo({
+                        url:`/pages/demand/details/main?receive_id=${item.publisher_id}&&name=${item.publisher_name}&&avatar=${res.data[0].avatar}`
+                    })
+                })
         }
     }
 }

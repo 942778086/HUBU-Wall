@@ -1,17 +1,22 @@
 <template>
   <div class="chatPage">
     <div class="header">{{ name }}</div>
-    <div class="body">
+              
+    <div class="body" :style="bodyStyle">
       <div class="chatRoom" v-for="(item, index) in chatList" :key="index">
+
         <div class="avaRoom">
-          <img class="friendAva" alt :src="friendAva" v-if="item.send_id === msg.receive_id" />
+          <img class="friendAva" alt :src="friendAva" v-if="item.send_id !== user_id">
         </div>
-        <div class="chatBody">{{ item.content }}</div>
+
+        <div :style="item.send_id === user_id ? rightChatBodyStyle : leftChatBodyStyle">{{ item.content }}</div>
+
         <div class="avaRoom">
-          <img class="myAva" :src="avatar" v-if="item.send_id === msg.send_id" />
+          <img class="myAva" :src="avatar"  v-if="item.send_id === user_id"/>
         </div>
       </div>
     </div>
+
     <div class="foot">
       <input v-model="msg.content" type="text" placeholder="请输入消息" maxlength="100" />
       <Button type="default" ghost @click="sendMsg">发送</Button>
@@ -24,8 +29,10 @@ import { formatDatetime } from "@/utils/formatDatetime";
 export default {
   data() {
     return {
+      avatar: '',
       friendAva: "",
       name: "",
+      user_id: 0,
       msg: {
         id: 0,
         send_id: 0,
@@ -33,18 +40,13 @@ export default {
         date: formatDatetime(new Date()),
         content: ""
       },
-      chatList: []
+      chatList: [],
+      bodyStyle: 'width: 100%;height:' + ( wx.getSystemInfoSync().windowHeight - 60 ) + 'px;overflow:hidden',
+      rightChatBodyStyle: 'width:' + ( wx.getSystemInfoSync().windowWidth - 125 ) + 'px;text-align: right;margin: 0 10px;padding-top: 15px;',
+      leftChatBodyStyle: 'width:' + ( wx.getSystemInfoSync().windowWidth - 125 ) + 'px;text-align: left;margin: 0 10px;padding-top: 15px;'
     };
   },
-  onLoad: function (options) {
-    console.log('options:',options)
-    this.querys = options
-    this.name = options.name
-  },
   created () {
-    // console.log('this.$store.state.userInfo.id2:',this.$store.state.userInfo.id)
-    // this.msg.send_id = this.$store.state.userInfo.id;
-    // this.avatar = this.$store.state.userInfo.avatar;
     this.$socket.on("connect", function() {
         console.log("connected successfully");
     });
@@ -52,6 +54,14 @@ export default {
         console.log('socketRes:',data)
         this.chatList = data;
     });
+  },
+  onLoad: function (options) {
+    this.querys = options
+    this.name = options.name
+    this.getAllMessage()
+    this.friendAva = options.avatar
+    this.avatar = this.$store.state.userInfo.avatar;
+    this.user_id = this.$store.state.userInfo.id;
   },
   methods: {
     getAllMessage () {
@@ -63,8 +73,6 @@ export default {
     },
     // 发送消息
     sendMsg() {
-      console.log('this.querys.receive_id:',this.querys.receive_id)
-      console.log('this.$store.state.userInfo.id:',this.$store.state.userInfo.id)
       this.msg.send_id = this.$store.state.userInfo.id
       this.msg.receive_id = parseInt(this.querys.receive_id);
       this.msg.date = formatDatetime(new Date());
@@ -93,11 +101,8 @@ export default {
   background-color: #4c667c;
   color: white;
 }
-.body {
-  width: 100%;
-  height: 471px;
-}
 .foot {
+  position: fixed;
   width: 100%;
   height: 50px;
   line-height: 50px;
@@ -128,12 +133,7 @@ image {
 }
 .friendAva {
   width: 50px;
-  margin-left: 8px;
   border-radius: 50%;
   border: 1px solid #4c667c;
-}
-.chatBody {
-  width: 217px;
-  padding-top: 15px;
 }
 </style>
