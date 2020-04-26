@@ -25,7 +25,7 @@ export default {
     },
     contactSeller () {
       wx.navigateTo({
-        url:`/pages/conversation/dialogue/main?receive_id=${this.querys.receive_id}&&name=${this.querys.name}`
+        url:`/pages/conversation/dialogue/main?receive_id=${this.querys.receive_id}&&name=${this.querys.name}&&avatar=${this.querys.avatar}`
       })
     }
   }
