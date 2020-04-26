@@ -54,7 +54,7 @@ export default {
         this.chatList = data
     })
   },
-  onLoad: function (options) {
+  onLoad (options) {
     this.querys = options
     this.name = options.name
     this.getAllMessage()
@@ -62,9 +62,16 @@ export default {
     this.avatar = this.$store.state.userInfo.avatar
     this.user_id = this.$store.state.userInfo.id
   },
+  onUnload () {
+    this.$store.state.dialogueInfo.push ({
+      avatar: this.querys.avatar,
+      name: this.querys.name,
+      lastSentence: this.chatList[this.chatList.length-1].content
+    })
+  },
   methods: {
     getAllMessage () {
-      this.$fly.post(`/message/getAll?send_id = ${this.$store.state.userInfo.id}&&receive_id = ${this.querys.receive_id}`)
+      this.$fly.post(`/message/getAll?send_id=${this.$store.state.userInfo.id}&&receive_id=${this.querys.receive_id}`)
         .then(res =>{
           this.chatList = res.data.data
         })

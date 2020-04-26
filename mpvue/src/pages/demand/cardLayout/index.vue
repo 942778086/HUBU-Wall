@@ -190,10 +190,10 @@ export default {
         },
         queryDetails (item) {
             // 根据publisher_id拿到发布者的头像，传递过去
-            this.$fly.get(`/user/getUser?id = ${item.publisher_id}`)
+            this.$fly.get(`/user/getUser?id=${item.publisher_id}`)
                 .then(res =>{
                     wx.navigateTo({
-                        url:`/pages/demand/details/main?receive_id = ${item.publisher_id}&&name = ${item.publisher_name}&&avatar = ${res.data[0].avatar}`
+                        url:`/pages/demand/details/main?receive_id=${item.publisher_id}&&name=${item.publisher_name}&&avatar=${res.data[0].avatar}`
                     })
                 })
         }
