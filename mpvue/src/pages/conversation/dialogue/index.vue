@@ -29,7 +29,7 @@ import { formatDatetime } from "@/utils/formatDatetime";
 export default {
   data() {
     return {
-      avatar: '',
+      avatar: "",
       friendAva: "",
       name: "",
       user_id: 0,
@@ -47,41 +47,38 @@ export default {
     };
   },
   created () {
-    this.$socket.on("connect", function() {
-        console.log("connected successfully");
-    });
-    this.$socket.on("res", function(data) {
-        console.log('socketRes:',data)
-        this.chatList = data;
-    });
+    this.$socket.on("connect", function () {
+        console.log("connected successfully")
+    })
+    this.$socket.on("res", function (data) {
+        this.chatList = data
+    })
   },
   onLoad: function (options) {
     this.querys = options
     this.name = options.name
     this.getAllMessage()
     this.friendAva = options.avatar
-    this.avatar = this.$store.state.userInfo.avatar;
-    this.user_id = this.$store.state.userInfo.id;
+    this.avatar = this.$store.state.userInfo.avatar
+    this.user_id = this.$store.state.userInfo.id
   },
   methods: {
     getAllMessage () {
-      this.$fly.post(`/message/getAll?send_id=${this.$store.state.userInfo.id}&&receive_id=${this.querys.receive_id}`)
+      this.$fly.post(`/message/getAll?send_id = ${this.$store.state.userInfo.id}&&receive_id = ${this.querys.receive_id}`)
         .then(res =>{
-          console.log('messageRes:',res)
           this.chatList = res.data.data
         })
     },
     // 发送消息
     sendMsg() {
       this.msg.send_id = this.$store.state.userInfo.id
-      this.msg.receive_id = parseInt(this.querys.receive_id);
-      this.msg.date = formatDatetime(new Date());
-      this.$socket.emit("req", { id: this.$socket.id, msg: this.msg });
-      this.msg.content = "";
-      this.getAllMessage()
+      this.msg.receive_id = parseInt(this.querys.receive_id)
+      this.msg.date = formatDatetime(new Date())
+      this.$socket.emit("req", { id: this.$socket.id, msg: this.msg })
+      this.msg.content = ""
     }
   }
-};
+}
 </script>
 
 <style scoped>
