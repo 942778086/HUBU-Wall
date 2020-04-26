@@ -14,3 +14,9 @@ module.exports = router.post('/newMessage', (ctx) => { return baseController.add
  */
 module.exports = router.post('/getAll', (ctx) => { return messageController.getAll(ctx) })
 
+/**
+ * 条件查询
+ * @type {Router}
+ */
+module.exports = router.post('/getChatByFileds', (ctx) => { return baseController.getByFields('message', ctx) })
+
