@@ -20,7 +20,6 @@
 </template>
 
 <script>
-const url = "http://localhost:3001/message";
 import { formatDatetime } from "@/utils/formatDatetime";
 export default {
   data() {
@@ -29,67 +28,49 @@ export default {
       name: "",
       msg: {
         id: 0,
-        send_id: 12,
-        receive_id: 13,
+        send_id: 0,
+        receive_id: 0,
         date: formatDatetime(new Date()),
         content: ""
       },
-      chatList: [],
-      sendList: [],
-      receiveList: []
+      chatList: []
     };
   },
-  computed: {
-    sendData() {
-      return {
-        send_id: 13,
-        receive_id: 12
-      };
-    },
-    receiveData() {
-      return {
-        send_id: 12,
-        receive_id: 13
-      };
-    }
+  onLoad: function (options) {
+    console.log('options:',options)
+    this.querys = options
+    this.name = options.name
   },
-  created() {
-    this.msg.send_id = this.$store.state.userInfo.id;
-    this.avatar = this.$store.state.userInfo.avatar;
-    this.getSend();
+  created () {
+    // console.log('this.$store.state.userInfo.id2:',this.$store.state.userInfo.id)
+    // this.msg.send_id = this.$store.state.userInfo.id;
+    // this.avatar = this.$store.state.userInfo.avatar;
     this.$socket.on("connect", function() {
-      console.log("connected successfully");
+        console.log("connected successfully");
     });
     this.$socket.on("res", function(data) {
-      this.chatList = data;
+        console.log('socketRes:',data)
+        this.chatList = data;
     });
   },
   methods: {
+    getAllMessage () {
+      this.$fly.post(`/message/getAll?send_id=${this.$store.state.userInfo.id}&&receive_id=${this.querys.receive_id}`)
+        .then(res =>{
+          console.log('messageRes:',res)
+          this.chatList = res.data.data
+        })
+    },
+    // 发送消息
     sendMsg() {
-      this.msg.send_id = 12;
+      console.log('this.querys.receive_id:',this.querys.receive_id)
+      console.log('this.$store.state.userInfo.id:',this.$store.state.userInfo.id)
+      this.msg.send_id = this.$store.state.userInfo.id
+      this.msg.receive_id = parseInt(this.querys.receive_id);
       this.msg.date = formatDatetime(new Date());
       this.$socket.emit("req", { id: this.$socket.id, msg: this.msg });
       this.msg.content = "";
-    },
-    // 第一个执行
-    getSend() {
-      console.log("getSend");
-      // select * from message where send_id=13 AND receive_id=12 limit 0,6
-      this.$fly.post(url + "/getChatByFileds", this.sendData).then(res => {
-        this.sendList = res.data;
-        this.getReceive();
-      });
-    },
-    // 第三个执行
-    getReceive() {
-      console.log("getReceive");
-      this.$fly.post(url + "/getChatByFileds", this.receiveData).then(res => {
-        this.receiveList = res.data;
-        this.chatList = this.sendList.concat(this.receiveList);
-        this.chatList.sort((a, b) => {
-          return a.date > b.date ? 1 : -1;
-        });
-      });
+      this.getAllMessage()
     }
   }
 };

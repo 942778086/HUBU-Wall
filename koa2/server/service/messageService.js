@@ -1,9 +1,9 @@
 const messageDao = require('../dao/messageDao')
 
 const messageService = {
-    getAll : async function (user_id,talk_to_id) {
+    getAll : async function (send_id,receive_id) {
         let data = {}
-        data.data = await messageDao.getAll(user_id,talk_to_id)
+        data.data = await messageDao.getAll(send_id,receive_id)
         return data
     }
 }
