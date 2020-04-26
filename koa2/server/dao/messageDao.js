@@ -1,8 +1,8 @@
 const query = require('../db')
 
 const messageDao = {
-     getAll (user_id, talk_to_id) {
-        return query(`select * from message where ((user_id = ${user_id} && talk_to_id = ${talk_to_id}) || (user_id = ${talk_to_id} && talk_to_id = ${user_id}))`)
+     getAll (send_id, receive_id) {
+        return query(`select * from message where ((send_id = ${send_id} && receive_id = ${receive_id}) || (send_id = ${receive_id} && receive_id = ${send_id}))`)
      }
 }
 

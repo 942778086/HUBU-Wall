@@ -1,7 +1,11 @@
 {
   "pages": [
     "pages/demand/main",
+    "pages/demand/cardLayout/main",
+    "pages/demand/details/main",
+    "pages/demand/listLayout/main",
     "pages/conversation/main",
+    "pages/conversation/dialogue/main",
     "pages/me/main",
     "pages/me/myInfo/main",
     "pages/me/myRelease/main",
