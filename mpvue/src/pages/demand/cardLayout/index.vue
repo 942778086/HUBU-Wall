@@ -81,7 +81,6 @@ export default {
             if (this.demand_kind == 1) {
                 this.$fly.get('/demand/getAll?page=1')
                     .then(res => {
-                        console.log('res:',res)
                         this.demands = res.data.data
                         this.demands.forEach(item => {
                             if (!item.img_url) {
@@ -190,14 +189,11 @@ export default {
             this.empty()
         },
         queryDetails (item) {
-            console.log('item',item)
             // 根据publisher_id拿到发布者的头像，传递过去
-            this.$fly.get(`/user/getUser?id=${item.publisher_id}`)
+            this.$fly.get(`/user/getUser?id = ${item.publisher_id}`)
                 .then(res =>{
-                    console.log('res:',res)
-                    console.log(res.data[0].avatar)
                     wx.navigateTo({
-                        url:`/pages/demand/details/main?receive_id=${item.publisher_id}&&name=${item.publisher_name}&&avatar=${res.data[0].avatar}`
+                        url:`/pages/demand/details/main?receive_id = ${item.publisher_id}&&name = ${item.publisher_name}&&avatar = ${res.data[0].avatar}`
                     })
                 })
         }
