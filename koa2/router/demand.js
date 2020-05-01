@@ -14,6 +14,12 @@ module.exports = router.get('/getAll', (ctx)=>{ return baseController.getAll('de
 module.exports = router.get('/getDemand', (ctx) => { return baseController.getById('demand', ctx) })
 
 /**
+ * 根据需求类别查询
+ * @type {Router}
+ */
+module.exports = router.get('/getDemandByDemandKind', (ctx) => { 
+    return baseController.getByFields('demand', ctx) })
+/**
  * 新建demand
  * @type {Router}
  */

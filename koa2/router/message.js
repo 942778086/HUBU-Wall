@@ -12,11 +12,21 @@ module.exports = router.post('/newMessage', (ctx) => { return baseController.add
  * 查询message
  * @type {Router}
  */
-module.exports = router.post('/getAll', (ctx) => { return messageController.getAll(ctx) })
+module.exports = router.post('/getAll', (ctx) => { return messageController.getAll('message', ctx) })
 
 /**
  * 条件查询
  * @type {Router}
  */
 module.exports = router.post('/getChatByFileds', (ctx) => { return baseController.getByFields('message', ctx) })
+/**
+ * 新建dialogueInfo
+ * @type {Router}
+ */
+module.exports = router.post('/newDialogueInfo', (ctx) => { return messageController.addRecord('dialogueInfo', ctx) })
+/**
+ * 查询所有dialogueInfo
+ * @type {Router}
+ */
+module.exports = router.post('/getAllDialogueInfo', (ctx) => { return baseController.getAll('dialogueInfo', ctx) })
 

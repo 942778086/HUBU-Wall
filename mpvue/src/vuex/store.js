@@ -5,8 +5,7 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    userInfo: {},
-    dialogueInfo: []
+    userInfo: {}
   },
   mutations: {
   }

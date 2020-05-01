@@ -2,13 +2,13 @@
   <div>
     <Me></Me>
     <div class="conversation">
-      <div @click="dialogue" v-for="(item, index) in dialogueList" :key="index">
+      <div @click="dialogue(item, index)" v-for="(item, index) in dialogueList" :key="index">
         <i-swipeout i-class="i-swipeout-demo-item" :actions="actions">
           <view slot="content">
             <view class="i-swipeout-des">
               <img :src="item.avatar"/>
               <view class="i-swipeout-des-h2">{{ item.name }}</view>
-              <view class="i-swipeout-des-detail">{{ item.lastSentence }}</view>
+              <view class="i-swipeout-des-detail">{{ item.last_sentence }}</view>
             </view>
           </view>
         </i-swipeout>
@@ -43,19 +43,30 @@ import Me from "../me/index";
             fontsize : '20',
             icon : 'undo'
           }
-        ]
+        ],
+        page: 1,
+        pageSize: 10,
+        dialogueIndex: 0
       }
     },
     created () {
-    }, 
-    onShow: function () {
-      this.dialogueList = this.$store.state.dialogueInfo
+      this.$socket.on("dialogueInfoRes", (data) => {
+        this.dialogueList[this.dialogueIndex] = data.data[0]
+        this.$forceUpdate()
+      })
+    },
+    onLoad: function () {
+      this.$fly.post(`/message/getAllDialogueInfo?page=${this.page}&&pageSize=${this.pageSize}`)
+        .then(res => {
+          this.dialogueList = res.data.data
+        })
     },
     methods: {
       // 进入到聊天界面
-      dialogue () {
+      dialogue (item, index) {
+        this.dialogueIndex = index
         wx.navigateTo({
-          url: "/pages/conversation/dialogue/main"
+          url:`/pages/conversation/dialogue/main?receive_id=${item.receive_id}&&name=${item.name}&&avatar=${item.avatar}`
         })
       }
     }

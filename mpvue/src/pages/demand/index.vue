@@ -18,26 +18,17 @@
       </swiper>
     </div>
     <div class="demand-kind">
-      <div class="demand-kind-item">
+      <div class="demand-kind-item" @click="navDemandKind(2, 'cardLayout')">
         <img class="demand-kind-icon" src="../../../static/images/parcle.png" />
-        <p>代拿快递</p>
+        <p>闲置物</p>
       </div>
-      <div class="demand-kind-item" @click="navDemandKind(1, cardLayout)">
+      <div class="demand-kind-item" @click="navDemandKind(1, 'cardLayout')">
         <img class="demand-kind-icon" src="../../../static/images/shareTheBill.png" />
         <p>二手书</p>
       </div>
-      <div class="demand-kind-item">
+      <div class="demand-kind-item" @click="navDemandKind(3, 'cardLayout')">
         <img class="demand-kind-icon" src="../../../static/images/resource.png" />
-        <p>资源求助</p>
-      </div>
-      <div class="demand-kind-item">
-        <img class="demand-kind-icon" src="../../../static/images/technology.png" />
-        <p>技术求助</p>
-      </div>
-      <br />
-      <div class="demand-kind-item">
-        <img class="demand-kind-icon" src="../../../static/images/partTimeJob.png" />
-        <p>兼职资源</p>
+        <p>租房</p>
       </div>
     </div>
     <div class="homepage-demand">
@@ -92,10 +83,8 @@ export default {
   methods: {
     navDemandKind(demandKind, isList) {
       wx.navigateTo({
-        url: `/pages/demand/${
-          isList ? "listLayout" : "cardLayout"
-        }/main?demand_kind=${demandKind}`
-      });
+        url: `/pages/demand/${isList}/main?demand_kind=${demandKind}`
+      })
     }
   },
   mounted() {}

@@ -1,10 +1,9 @@
 <template>
   <div class="chatPage">
     <div class="header">{{ name }}</div>
-              
-    <div class="body" :style="bodyStyle">
-      <div class="chatRoom" v-for="(item, index) in chatList" :key="index">
 
+    <scroll-view :style="bodyStyle" scroll-y :scroll-into-view="toLast">
+      <div class="chatRoom" v-for="(item, index) in chatList" :key="index" :id="'item'+(index+1)">
         <div class="avaRoom">
           <img class="friendAva" alt :src="friendAva" v-if="item.send_id !== user_id">
         </div>
@@ -14,18 +13,20 @@
         <div class="avaRoom">
           <img class="myAva" :src="avatar"  v-if="item.send_id === user_id"/>
         </div>
+
+        <div class="time" v-if="index%6==0">{{ item.date }}</div>
       </div>
-    </div>
+    </scroll-view>
 
     <div class="foot">
       <input v-model="msg.content" type="text" placeholder="请输入消息" maxlength="100" />
-      <Button type="default" ghost @click="sendMsg">发送</Button>
+      <Button class="send_btn" type="default" ghost @click="sendMsg">发送</Button>
     </div>
   </div>
 </template>
 
 <script>
-import { formatDatetime } from "@/utils/formatDatetime";
+import { formatDatetime, transferStandardToBeijingTime } from "@/utils/formatDatetime";
 export default {
   data() {
     return {
@@ -41,17 +42,19 @@ export default {
         content: ""
       },
       chatList: [],
-      bodyStyle: 'width: 100%;height:' + ( wx.getSystemInfoSync().windowHeight - 60 ) + 'px;overflow:hidden',
-      rightChatBodyStyle: 'width:' + ( wx.getSystemInfoSync().windowWidth - 125 ) + 'px;text-align: right;margin: 0 10px;padding-top: 15px;',
+      toLast: '',
+      bodyStyle: 'width: 100%;height:' + ( wx.getSystemInfoSync().windowHeight - 90 ) + 'px;overflow:scroll',
+      rightChatBodyStyle: 'width:' + ( wx.getSystemInfoSync().windowWidth - 135 ) + 'px;text-align: right;margin: 0 10px;padding-top: 15px;',
       leftChatBodyStyle: 'width:' + ( wx.getSystemInfoSync().windowWidth - 125 ) + 'px;text-align: left;margin: 0 10px;padding-top: 15px;'
     };
   },
   created () {
     this.$socket.on("connect", function () {
-        console.log("connected successfully")
+      console.log("connected successfully")  
     })
-    this.$socket.on("res", function (data) {
-        this.chatList = data
+    this.$socket.on("res", (data) => {
+      this.chatList = data.data
+      this.toLast = `item${this.chatList.length}`
     })
   },
   onLoad (options) {
@@ -63,26 +66,38 @@ export default {
     this.user_id = this.$store.state.userInfo.id
   },
   onUnload () {
-    this.$store.state.dialogueInfo.push ({
+    // 怎么判断是新增还是更新呢？后台有做判断
+    this.$fly.post('/message/newDialogueInfo', {
       avatar: this.querys.avatar,
       name: this.querys.name,
-      lastSentence: this.chatList[this.chatList.length-1].content
+      last_sentence: this.chatList[this.chatList.length-1].content,
+      receive_id: this.querys.receive_id,
+      send_id: this.$store.state.userInfo.id
     })
+      .then(res => {
+        this.$socket.emit('dialogueInfo',{id: this.$socket.id, page: 1, pageSize: 10, receive_id: this.querys.receive_id, send_id: this.$store.state.userInfo.id})
+      })
   },
   methods: {
     getAllMessage () {
       this.$fly.post(`/message/getAll?send_id=${this.$store.state.userInfo.id}&&receive_id=${this.querys.receive_id}`)
         .then(res =>{
           this.chatList = res.data.data
+          this.chatList.forEach(element => {
+            element.date = transferStandardToBeijingTime(element.date)
+          })
+          this.toLast = `item${this.chatList.length}`
         })
     },
     // 发送消息
     sendMsg() {
-      this.msg.send_id = this.$store.state.userInfo.id
-      this.msg.receive_id = parseInt(this.querys.receive_id)
-      this.msg.date = formatDatetime(new Date())
-      this.$socket.emit("req", { id: this.$socket.id, msg: this.msg })
-      this.msg.content = ""
+      if (this.msg.content) {
+        this.msg.send_id = this.$store.state.userInfo.id
+        this.msg.receive_id = parseInt(this.querys.receive_id)
+        this.msg.date = formatDatetime(new Date())
+        this.$socket.emit("req", { id: this.$socket.id, msg: this.msg })
+        this.msg.content = "" 
+      }
     }
   }
 }
@@ -108,16 +123,27 @@ export default {
 .foot {
   position: fixed;
   width: 100%;
-  height: 50px;
-  line-height: 50px;
-  background-color: #4c667c;
+  height: 90px;
+  line-height: 90px;
+  background-color: lightgray;
+}
+input{
+  height: 35px;
+  line-height: 35px;
+  text-indent: 10px;
+}
+.send_btn{
+  background: #4c667c;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
 }
 .chatRoom {
   width: 100%;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  margin: 0 auto 8px auto;
+  margin: 25px auto 8px auto;
 }
 .avaRoom {
   width: 50px;
@@ -139,5 +165,13 @@ image {
   width: 50px;
   border-radius: 50%;
   border: 1px solid #4c667c;
+}
+.time{
+  position: absolute;
+  font-size: 14px;
+  height: 10px;
+  line-height: 10px;
+  width: 100%;
+  text-align: center;
 }
 </style>
