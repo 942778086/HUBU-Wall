@@ -57,3 +57,22 @@ export function formatDateFriendly (date, includeSeconds) {
   // 不是今年
   return `${year}年${month}${datestr}日${timeStr}`
 }
+
+// 将国际标准时间转换成北京时间  2020-01-13T16:00:00.000Z  --> 2020-01-14 00:00:00 在国际标准时间上加上8小时，即东八区时间
+export function transferStandardToBeijingTime (standardTime) {
+  // 转为正常的时间格式 年-月-日 时:分:秒
+  let T_pos = standardTime.indexOf('T')
+  let Dot_pos = standardTime.indexOf('.')
+  let year_month_day = standardTime.substr(0, T_pos)
+  let hour_minute_second = standardTime.substr(T_pos + 1, Dot_pos - T_pos - 1)
+  let new_datetime = year_month_day + ' ' + hour_minute_second
+  // 处理成为时间戳
+  let timestamp = new Date(Date.parse(new_datetime))
+  timestamp = timestamp.getTime()
+  timestamp = timestamp / 1000
+  // 增加8个小时，北京时间比utc时间多八个时区
+  timestamp = timestamp + 8 * 60 * 60
+  // 时间戳转为时间
+  let beijing_datetime = new Date(parseInt(timestamp) * 1000).toLocaleString().replace(/年|月/g, '-').replace(/日/g, ' ')
+  return beijing_datetime
+}

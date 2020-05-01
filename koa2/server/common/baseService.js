@@ -25,54 +25,26 @@ module.exports = baseService = {
     async getById(id, tableName) {
         return baseDao.getById(id, tableName)
     },
+
     /**
      * 非主键查询（条件查询）
      * @param tableName
      * @param ctx
      * @returns {Promise<unknown>}
      */
-    async getByFields(tableName, ctx) {
-        let page = ctx.request.body.page || 1
-        let pageSize = ctx.request.body.pageSize
-        let req = ctx.request.body
-        let keysArr = Object.keys(req)
-        let valuesArr = []
-        for (const property in req) {
-            valuesArr.push(req[property])
-        }
+    async getByFields (tableName, ctx) {
+        let page = ctx.request.query.page
+        let pageSize = ctx.request.query.pageSize
+        delete ctx.request.query.page
+        delete ctx.request.query.pageSize
         let field = ''
-        if (keysArr.indexOf('page') === -1) {
-            let length = keysArr.length
-            for (let i = 0; i < length; i++) {
-                // 最后一项不加AND
-                if (i === keysArr.length - 1) {
-                    // varchar/char 有引号包裹
-                    let lastItem = typeof valuesArr[i] === 'string' ? '\'' + valuesArr[i] + '\'' : valuesArr[i]
-                    field = field + keysArr[i] + '=' + lastItem
-                } else {
-                    let item = typeof valuesArr[i] === 'string' ? '\'' + valuesArr[i] + '\'' : valuesArr[i]
-                    field = field + keysArr[i] + '=' + item + ' ' + 'AND' + ' '
-                }
-            }
-        } else {
-            let length = keysArr.length;
-            for (let i = 0; i < length; i++) {
-                if (i === length - 2) {
-                    // varchar/char 有引号包裹
-                    if (typeof valuesArr[i] === 'string') {
-                        field = field + keysArr[i] + '=' + '\'' + valuesArr[i] + '\''
-                        break
-                    } else {
-                        field = field + keysArr[i] + '=' + valuesArr[i]
-                        break
-                    }
-                } else {
-                    if (typeof valuesArr[i] === 'string') {
-                        field = field + keysArr[i] + '=' + '\'' + valuesArr[i] + '\'' + 'AND'
-                    } else {
-                        field = field + keysArr[i] + '=' + valuesArr[i] + 'AND'
-                    }
-                }
+        let property = ''
+        let length = Object.getOwnPropertyNames(ctx.request.query).length
+        for (i = 0; i < length; i++) {
+            property = Object.getOwnPropertyNames(ctx.request.query)[i]
+            field = field + property + '=' + ctx.request.query[property] + ' and '
+            if (i == length - 1) {
+                field = field.substring(0, field.length-4)
             }
         }
         return baseDao.selectByFields(page, tableName, field, pageSize)

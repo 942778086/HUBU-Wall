@@ -1,7 +1,9 @@
 <template>
     <div class="demands" :style="demandsStyle">
-        <div @click="displayPublishDiv" class="btn first_publish_btn">发布</div>
-        
+        <div class="top_btn_div">
+            <div @click="displayPublishDiv" class="btn first_publish_btn">发布</div>
+        </div>
+         
         <div class="publish" v-if="showPublishDiv">
             <label for="details">细节描述：</label><input v-model="details" type="text" class="details" placeholder="请输入细节描述"/><br>
             <label>价格：</label><input v-model="price" type="text" placeholder="请输入数字"/><br>
@@ -33,6 +35,7 @@
 </template>
 
 <script>
+import NaiveBayes from 'naivebayes'
 import { formatDatetime, formatDateFriendly } from '@/utils/formatDatetime'
 const COS = require("cos-wx-sdk-v5");
 const Bucket = "wjxcloud-1258315462";
@@ -53,6 +56,21 @@ const cos = new COS({
     })
   }
 })
+
+// 实例化（创建分类器）
+const classifier = new NaiveBayes()
+
+// 学习文本和分类
+classifier.learn('书', '二手书')
+classifier.learn('闲置', '闲置物')
+classifier.learn('房子', '租房')
+
+// 导出学习数据，serialize the classifier's state as a JSON string.
+const stateJson = classifier.toJson()
+
+// 导入学习数据，load the classifier back from its JSON representation.
+const revivedClassifier = NaiveBayes.fromJson(stateJson)
+
 export default {
     data () {
         return {
@@ -64,36 +82,48 @@ export default {
             btnStyle: '',
             demandsStyle: '',
             demands: [],
-            demand_kind: 0
+            demand_kind: 0,
+            page: 1
         }
     },
     created () {
         this.btnStyle = 'width:' + wx.getSystemInfoSync().windowWidth + 'px;'
-        // this.demandsStyle = 'width:' + wx.getSystemInfoSync().windowWidth + 'px;background-image: linear-gradient(#b6fbff, #83a4d4);'
     },
     onLoad: function (options) {
         this.demand_kind = options.demand_kind
         this.showPublishDiv = false
-        this.getAll()
+        this.page = 1
+        this.demands = []
+        this.getAll(this.page)
+    },
+    onReachBottom: function() {
+        if (this.demands.length % 6 == 0){
+            this.page++
+            this.getAll(this.page)
+        } else {
+            wx.showToast({
+                icon: "none",
+                title: "无更多数据",
+                duration: 2000
+            })
+        }
     },
     methods: {
-        getAll () {
-            if (this.demand_kind == 1) {
-                this.$fly.get('/demand/getAll?page=1')
-                    .then(res => {
-                        this.demands = res.data.data
-                        this.demands.forEach(item => {
-                            if (!item.img_url) {
-                                item.img_url = []
-                            }
-                            if (item.img_url.indexOf(",") > 0) {
-                                item.img_url = item.img_url.split(",")
-                            } else {
-                                item.img_url = [item.img_url]
-                            }
-                        })
+        getAll (page) {
+            this.$fly.get(`/demand/getDemandByDemandKind?demand_kind=${this.demand_kind}&&is_deal=${0}&&pageSize=6&&page=${page}`)
+                .then(res => {
+                    this.demands = this.demands.concat(res.data)
+                    this.demands.forEach(item => {
+                        if (!item.img_url) {
+                            item.img_url = []
+                        }
+                        if (item.img_url.indexOf(",") > 0) {
+                            item.img_url = item.img_url.split(",")
+                        } else {
+                            item.img_url = [item.img_url]
+                        }
                     })
-            }
+                })
         },
         displayPublishDiv () {
             this.showPublishDiv = true
@@ -166,7 +196,8 @@ export default {
                                 title: "发布成功",
                                 duration: 2000
                             })
-                            this.getAll()
+                            this.page = 1
+                            this.getAll(this.page)
                         } else {
                             wx.showToast({
                                 icon: "none",
@@ -193,7 +224,7 @@ export default {
             this.$fly.get(`/user/getUser?id=${item.publisher_id}`)
                 .then(res =>{
                     wx.navigateTo({
-                        url:`/pages/demand/details/main?receive_id=${item.publisher_id}&&name=${item.publisher_name}&&avatar=${res.data[0].avatar}`
+                        url:`/pages/demand/details/main?item=${JSON.stringify(item)}&&avatar=${res.data[0].avatar}`
                     })
                 })
         }
@@ -202,6 +233,13 @@ export default {
 </script>
 
 <style scoped>
+.top_btn_div{
+    position: relative;
+    height: 50px;
+}
+.first_publish_btn{
+    position: fixed
+}
 label{
     line-height: 40px;
 }
@@ -249,7 +287,6 @@ input{
 }
 .homepage-demand {
   width: 98%;
-  margin: 0 auto;
 }
 .homepage-demand-item {
   display: flex;

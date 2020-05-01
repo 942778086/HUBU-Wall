@@ -3,10 +3,11 @@ const messageService = require('../service/messageService')
 
 let messageController = {
 
-  getAll: async function (ctx) {
-    const send_id = ctx.request.query.send_id
-    const receive_id = ctx.request.query.receive_id
-    ctx.body = await messageService.getAll(send_id,receive_id)
+  getAll: async function (tableName, ctx) {
+    ctx.body = await messageService.getAll(tableName, ctx)
+  },
+  addRecord: async function (tablename, ctx) {
+    ctx.body = await messageService.addRecord(tablename, ctx)
   }
 }
 module.exports = messageController
