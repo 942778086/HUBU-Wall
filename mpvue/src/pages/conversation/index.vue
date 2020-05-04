@@ -3,12 +3,13 @@
     <Me></Me>
     <div class="conversation">
       <div @click="dialogue(item, index)" v-for="(item, index) in dialogueList" :key="index">
-        <i-swipeout i-class="i-swipeout-demo-item" :actions="actions" @click.stop="handleDelete(item)">
+        <i-swipeout i-class="i-swipeout-demo-item">
           <view slot="content">
             <view class="i-swipeout-des">
               <img :src="item.avatar"/>
               <view class="i-swipeout-des-h2">{{ item.name }}</view>
               <view class="i-swipeout-des-detail">{{ item.last_sentence }}</view>
+              <button @click.stop="handleDelete(item)"></button>
             </view>
           </view>
         </i-swipeout>
@@ -102,20 +103,40 @@ import Me from "../me/index";
   height: 40px;
 }
 img{
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   position: absolute;
   left: 0px;
+  margin-right: 10px;
   border-radius: 100%;
+}
+button{
+  float: right;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  background-image: url('../../../static/images/close.png');
+  background-size: contain;
+  background-color: none;
+  outline: none;
+  border: none;
+  border-radius: 0;
+  top: -10px;
+  left: -10px;
+
+}
+button::after{
+  border: none;
 }
 </style>
 <style>
 .i-swipeout-des-h2{
   position: relative;
-  left: 40px
+  left: 55px
 }
 .i-swipeout-des-detail{
   position: relative;
-  left: 40px
+  left: 55px;
+  display: inline-block;
 }
 </style>

@@ -55,6 +55,10 @@ export default {
     this.$socket.on("res", (data) => {
       this.chatList = data.data
       this.toLast = `item${this.chatList.length}`
+      wx.setTabBarBadge({
+        index: 1,
+        text: '1'
+      })
     })
   },
   onLoad (options) {
