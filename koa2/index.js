@@ -11,6 +11,7 @@ const ioServer = require('http').Server(app)
 const io = require('socket.io')(ioServer)
 const socketFunc = require('./server/socket/webSocket')
 const sslify = require('koa-sslify').default;
+const http = require('http');
 const https = require('https');
 const fs = require('fs');
 
@@ -34,15 +35,20 @@ io.on('connection', (socket) => {
 })
 // websocket 端口
 ioServer.listen(config.wsPort, () => {
-    console.log(`🚀 WebSocket Server is running at http://localhost:${config.wsPort}`)
+    console.log(`🚀 WebSocket Server is running at http://www.wjxweb.cn:${config.wsPort}`)
+})
+// http server
+let httpServer = http.createServer(app.callback());
+httpServer.listen(config.port, () => {
+    console.log(`🚀 Server ready at http://www.wjxweb.cn:${config.port}`)
 })
 // 搭建https服务器
-app.use(sslify());
 const certOption = {
-    key: fs.readFileSync('./server/cert/3_www.wjxweb.cn.key'),
-    pem: fs.readFileSync('./server/cert/2_www.wjxweb.cn.pem')
+    key: fs.readFileSync('./server/cert/www.wjxweb.cn.key'),
+    cert: fs.readFileSync('./server/cert/www.wjxweb.cn.pem')
 }
+app.use(sslify());
 let httpsServer = https.createServer(certOption, app.callback());
-httpsServer.listen(config.port, () => {
-    console.log(`🚀 Server ready at http://localhost:${config.port}`)
+httpsServer.listen(443, (err) => {
+    console.log(`🚀 https Server ready at https://www.wjxweb.cn:443`)
 })
