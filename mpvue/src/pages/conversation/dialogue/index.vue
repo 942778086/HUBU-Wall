@@ -1,7 +1,5 @@
 <template>
   <div class="chatPage">
-    <div class="header">{{ name }}</div>
-
     <scroll-view :style="bodyStyle" scroll-y :scroll-into-view="toLast">
       <div class="chatRoom" v-for="(item, index) in chatList" :key="index" :id="'item'+(index+1)">
         <div class="avaRoom">
@@ -20,7 +18,7 @@
 
     <div class="foot">
       <input v-model="msg.content" type="text" placeholder="请输入消息" maxlength="100" />
-      <Button class="send_btn" type="default" ghost @click="sendMsg">发送</Button>
+      <button class="send_btn" type="default" ghost @click="sendMsg">发送</button>
     </div>
   </div>
 </template>
@@ -43,7 +41,7 @@ export default {
       },
       chatList: [],
       toLast: '',
-      bodyStyle: 'width: 100%;height:' + ( wx.getSystemInfoSync().windowHeight - 90 ) + 'px;overflow:scroll',
+      bodyStyle: 'width: 100%;height:' + ( wx.getSystemInfoSync().windowHeight - 50 ) + 'px;overflow:scroll',
       rightChatBodyStyle: 'width:' + ( wx.getSystemInfoSync().windowWidth - 135 ) + 'px;text-align: right;margin: 0 10px;padding-top: 15px;',
       leftChatBodyStyle: 'width:' + ( wx.getSystemInfoSync().windowWidth - 125 ) + 'px;text-align: left;margin: 0 10px;padding-top: 15px;'
     };
@@ -64,6 +62,7 @@ export default {
   onLoad (options) {
     this.querys = options
     this.name = options.name
+    this.setNavigationBarTitleText()
     this.getAllMessage()
     this.friendAva = options.avatar
     this.avatar = this.$store.state.userInfo.avatar
@@ -83,6 +82,12 @@ export default {
       })
   },
   methods: {
+    // 设置navigationBarTitleText
+    setNavigationBarTitleText () {
+      wx.setNavigationBarTitle({
+        title: this.name
+      })
+    },
     getAllMessage () {
       this.$fly.post(`/message/getAll?send_id=${this.$store.state.userInfo.id}&&receive_id=${this.querys.receive_id}`)
         .then(res =>{
@@ -114,33 +119,28 @@ export default {
   height: 100%;
   background-color: #ebebeb;
 }
-.header {
-  width: 100%;
-  height: 40px;
-  line-height: 40px;
-  text-align: center;
-  font-weight: bold;
-  font-size: 20px;
-  background-color: #4c667c;
-  color: white;
-}
 .foot {
-  position: fixed;
+  position: absolute;
   width: 100%;
-  height: 90px;
-  line-height: 90px;
+  height: 12%;
+  top: 88%;
   background-color: lightgray;
 }
 input{
-  height: 35px;
-  line-height: 35px;
+  height: 40%;
   text-indent: 10px;
 }
 .send_btn{
-  background: #4c667c;
+  height: 60%;
+  background: #A2C6E7;
   color: white;
   font-weight: bold;
   font-size: 20px;
+  line-height: 2.2;
+  letter-spacing: 15px;
+}
+button{
+  padding: 0 0 0 15px;
 }
 .chatRoom {
   width: 100%;

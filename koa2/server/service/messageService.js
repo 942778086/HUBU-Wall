@@ -3,6 +3,9 @@ const baseDao = require('../common/baseDao')
 const baseService = require('../common/baseService')
 
 const messageService = {
+    /** 
+     * @description 获取某sender与某receiver的所有message消息
+    */
     getAll: async function (tableName, ctx) {
         let data = {}
         const send_id = ctx.request.query.send_id
@@ -10,6 +13,9 @@ const messageService = {
         data.data = await messageDao.getAll(tableName, send_id, receive_id)
         return data
     },
+    /** 
+     * @description 添加一条对话记录（不是具体的聊天信息）
+    */
     addRecord: async function (tableName, ctx) {
         let keysArr = Object.keys(ctx.request.body)
         let valuesArr = [];
@@ -24,7 +30,7 @@ const messageService = {
         const keys = keysArr.join(',')
         const values = valuesArr.join(',')
         let flag = false
-        let data = await messageDao.getAllDialogueInfo (tableName)
+        let data = await messageDao.getAllDialogueInfo (tableName, ctx.request.body.send_id)
         data.forEach(element => {
             if (element.receive_id == ctx.request.body.receive_id) {
                 // 标志数据库已经存在该对话记录
@@ -38,6 +44,13 @@ const messageService = {
         } else {
             return baseService.updateRecord(tableName, ctx)
         }
+    },
+    /** 
+     * @description 获取某sender与所有receiver的对话记录信息
+    */
+    getAllDialogueInfo: async function (tableName, ctx) {
+        let sendOrReceive_id = ctx.request.query.send_id
+        return messageDao.getAllDialogueInfo(tableName, sendOrReceive_id)
     }
 }
 module.exports = messageService
