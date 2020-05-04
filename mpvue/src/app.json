@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/demand/main",
+    "pages/demand/address/main",
     "pages/demand/cardLayout/main",
     "pages/demand/details/main",
     "pages/demand/listLayout/main",

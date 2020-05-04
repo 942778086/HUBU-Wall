@@ -42,7 +42,7 @@ module.exports = baseService = {
         let length = Object.getOwnPropertyNames(ctx.request.query).length
         for (i = 0; i < length; i++) {
             property = Object.getOwnPropertyNames(ctx.request.query)[i]
-            field = field + property + '=' + ctx.request.query[property] + ' and '
+            field = field + property + '="' + ctx.request.query[property] + '" and '
             if (i == length - 1) {
                 field = field.substring(0, field.length-4)
             }

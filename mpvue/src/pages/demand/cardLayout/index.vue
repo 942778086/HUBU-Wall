@@ -1,20 +1,21 @@
 <template>
     <div class="demands" :style="demandsStyle">
         <div class="top_btn_div">
-            <div @click="displayPublishDiv" class="btn first_publish_btn">发布</div>
+            <button class="top_publish_btn" :style="topPublishBtnStyle" @click="displayPublishDiv">发布{{demand_kind}}</button>
         </div>
          
-        <div class="publish" v-if="showPublishDiv">
+        <div class="publish_div" v-if="showPublishDiv">
             <label for="details">细节描述：</label><input v-model="details" type="text" class="details" placeholder="请输入细节描述"/><br>
             <label>价格：</label><input v-model="price" type="text" placeholder="请输入数字"/><br>
-            <label>图片：</label><div @click="addPhoto" class="choose_btn">选择图片</div>
+            <label class="picture_label">图片：</label><div @click="addPhoto" class="choose_picture_btn">选择图片</div>
             <label v-for="(item, index) in pictures" :key="index" >
                 <img class="img" :src="item" />
             </label>
-            <div :style="btnStyle" class="btn_div">
-                <div @click="cancelPublish" class="cancel_btn btn" >取消</div>
-                <div @click="publish" class="publish_btn btn" >发布</div>
-            </div>
+        </div>
+
+        <div class="btn_div" v-if="showPublishDiv">
+            <div @click="cancelPublish" class="buttom_cancel_btn btn" >取消</div>
+            <div @click="publish" class="buttom_publish_btn btn" >发布</div>
         </div>
         
         <div class="homepage-demand" v-if="!showPublishDiv">
@@ -26,7 +27,10 @@
                     <p class="detail">{{ item.details }}</p>
                     <div class="publisher">来自{{ item.publisher_name }}</div>
                     <div v-if="item.price == 0" class="price-free">FREE</div>
-                    <div v-else class="price">￥{{ item.price }}</div>
+                    <div v-else class="price">
+                        ￥{{ item.price }}
+                        <button class="delete_btn" @click.stop="deleteDemand(item)"></button>
+                    </div> 
                     <div class="time">{{ item.date }}</div>
                 </div>
             </div>
@@ -36,7 +40,7 @@
 
 <script>
 import NaiveBayes from 'naivebayes'
-import { formatDatetime, formatDateFriendly } from '@/utils/formatDatetime'
+import { formatDatetime, formatDateFriendly, transferStandardToBeijingTime } from '@/utils/formatDatetime'
 const COS = require("cos-wx-sdk-v5");
 const Bucket = "wjxcloud-1258315462";
 const Region = "ap-guangzhou";
@@ -79,28 +83,30 @@ export default {
             price: '',
             imgUrl: '',
             pictures: [],
-            btnStyle: '',
             demandsStyle: '',
             demands: [],
             demand_kind: 0,
-            page: 1
+            page: 1,
+            topPublishBtnStyle: ''
         }
     },
     created () {
-        this.btnStyle = 'width:' + wx.getSystemInfoSync().windowWidth + 'px;'
     },
     onLoad: function (options) {
         this.demand_kind = options.demand_kind
         this.showPublishDiv = false
         this.page = 1
         this.demands = []
+        this.setNavigationBarTitleText()
         this.getAll(this.page)
     },
     onReachBottom: function() {
         if (this.demands.length % 6 == 0){
+            // 这个地方逻辑不完善，取余为0，可能接下来还有数据，可能接下来没有数据了,这个后面完善
             this.page++
             this.getAll(this.page)
         } else {
+            // 如果对6取余不为0，则一定无更多的数据
             wx.showToast({
                 icon: "none",
                 title: "无更多数据",
@@ -109,11 +115,16 @@ export default {
         }
     },
     methods: {
+        // 设置navigationBarTitleText
+        setNavigationBarTitleText () {
+            wx.setNavigationBarTitle({
+                title: this.demand_kind
+            })
+        },
         getAll (page) {
             this.$fly.get(`/demand/getDemandByDemandKind?demand_kind=${this.demand_kind}&&is_deal=${0}&&pageSize=6&&page=${page}`)
                 .then(res => {
-                    this.demands = this.demands.concat(res.data)
-                    this.demands.forEach(item => {
+                    res.data.forEach(item => {
                         if (!item.img_url) {
                             item.img_url = []
                         }
@@ -122,10 +133,13 @@ export default {
                         } else {
                             item.img_url = [item.img_url]
                         }
+                        item.date = transferStandardToBeijingTime(item.date)
                     })
+                    this.demands = this.demands.concat(res.data)
                 })
         },
         displayPublishDiv () {
+            this.topPublishBtnStyle = 'background: snow;color: #A2C6E7;'
             this.showPublishDiv = true
             this.showDisplayDiv = false
         },
@@ -155,7 +169,6 @@ export default {
                     }
                 }
             })
-            this.pictures = []
         },
         // 对价格做正则处理
         regularPrice (price) {
@@ -174,7 +187,7 @@ export default {
         empty () {
             this.details = ''
             this.price = ''
-            this.pictures = ''
+            this.pictures = []
         },
         publish () {
             if (this.regularPrice(this.price)) {
@@ -187,7 +200,7 @@ export default {
                     accepter_id: 0,
                     is_deal: 0,
                     details: this.details,
-                    demand_kind: 1 // 固定传1，代表是二手书
+                    demand_kind: this.demand_kind // 以后demand_kind不在前端传，在后端通过对details的内容进行分析，再取对应之值
                 })
                     .then(res => {
                         if (res.data.affectedRows === 1) {
@@ -197,7 +210,9 @@ export default {
                                 duration: 2000
                             })
                             this.page = 1
+                            this.demands = []
                             this.getAll(this.page)
+                            this.topPublishBtnStyle = 'background: A2C6E7;color: snow;'
                         } else {
                             wx.showToast({
                                 icon: "none",
@@ -211,6 +226,7 @@ export default {
             }
         },
         cancelPublish () {
+            this.topPublishBtnStyle = 'background: A2C6E7;color: snow;'
             this.showPublishDiv = false
             wx.showToast({
                 icon: "none",
@@ -218,6 +234,41 @@ export default {
                 duration: 2000
             })
             this.empty()
+        },
+        deleteDemand (item) {
+            if (item.publisher_id !== this.$store.state.userInfo.id) {
+                wx.showToast({
+                    icon: "none",
+                    title: "仅该记录的发布者能进行删除操作",
+                    duration: 2000
+                })
+            } else {
+                wx.showModal({
+                    title: '提示',
+                    content: '确定删除该记录吗？',
+                    success: res => {
+                        if (res.confirm) {
+                            this.$fly.delete(`/demand/deleteDemand?id=${item.id}`)
+                                .then(res => {
+                                    wx.showToast({
+                                        icon: "none",
+                                        title: "删除成功",
+                                        duration: 2000
+                                    })
+                                    this.page = 1
+                                    this.demands = []
+                                    this.getAll(this.page)
+                                })
+                        } else if (res.cancel) {
+                            wx.showToast({
+                                icon: "none",
+                                title: "取消删除",
+                                duration: 2000
+                            })
+                        }
+                    },
+                })
+            }
         },
         queryDetails (item) {
             // 根据publisher_id拿到发布者的头像，传递过去
@@ -236,28 +287,55 @@ export default {
 .top_btn_div{
     position: relative;
     height: 50px;
+    text-align: center;
+    margin-bottom: 50px;
 }
-.first_publish_btn{
-    position: fixed
+.top_publish_btn{
+    background: #A2C6E7;
+    color: snow;
+    border: 2px solid lightblue;
+    font-family: 'montserrat', sans-serif;
+    margin: 10px 10px 0px 10px;
+    font-size: 25px;
+    font-weight: bolder;
+    letter-spacing: 30px;
+    text-indent: 30px;
+    transition: color 0.4s linear;
+    position: fixed;
+    width: 95%;
+    z-index: 1000;
+}
+.publish_div{
+    width: 95%;
+    margin: 0 10px;
 }
 label{
     line-height: 40px;
+    width: 100px;
+    text-align: right;
+    display: inline-block;
+}
+.picture_label{
+    margin-top: 20px;
 }
 input{
     border: 1px solid lightgray;
     display: inline-block;
     vertical-align: middle;
     text-indent: 15px;
+    border-radius: 6px;
+    width: 70%;
 }
-.choose_btn{
+.choose_picture_btn{
     width: 100px;
     height: 35px;
     line-height: 35px;
     text-align: center;
-    background-color:lightgray;
+    background-color:#A2C6E7;
     color: white;
-    margin-left: 60px;
-    border-radius: 3px;
+    margin: 20px 0 0 60px;
+    border-radius: 30px;
+    float: right;
 }
 .img_div{
     display: inline-block;
@@ -267,24 +345,7 @@ input{
   height: 100px;
   margin: 10px;
 }
-.btn_div{
-    height: 32px;
-    text-align: center;
-    margin-top: 20px;
-}
-.btn{
-    display: inline-block;
-    text-align: center;
-    line-height: 30px;
-    width: 100px;
-    height: 30px;
-    color: #FFF;
-    margin: 0 10px;
-    background-image: linear-gradient(#00B3F1, #00A3EF);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, .19), inset 0 1px 0 rgba(255, 255, 255, .4);
-    border: solid 1px #0082BE;
-    border-radius: 3px;
-}
+
 .homepage-demand {
   width: 98%;
 }
@@ -328,5 +389,38 @@ input{
   font-size: 15px;
   color: rgb(58, 190, 58);
   font-weight: bold;
+}
+.btn_div{
+    text-align: center;
+    position: absolute;
+    top: 93%;
+    width: 100%;
+    height: 7%;
+}
+.buttom_cancel_btn,.buttom_publish_btn{
+    display: inline-block;
+    text-align: center;
+    line-height: 2.3;
+    width: 50%;
+    height: 100%;
+    color: #FFF;
+    background-color: #A2C6E7;
+}
+.buttom_cancel_btn{
+    left: 0;
+}
+.buttom_publish_btn{
+    left: 50%;
+}
+.delete_btn{
+    width: 14px;
+    height: 27px;
+    float: right;
+    background-image: url('../../../../static/images/delete2.png');
+    background-size: cover;
+}
+.delete_btn::after{
+    content: '';
+    border: none;
 }
 </style>

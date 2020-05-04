@@ -3,7 +3,7 @@
     <Me></Me>
     <div class="conversation">
       <div @click="dialogue(item, index)" v-for="(item, index) in dialogueList" :key="index">
-        <i-swipeout i-class="i-swipeout-demo-item" :actions="actions">
+        <i-swipeout i-class="i-swipeout-demo-item" :actions="actions" @click.stop="handleDelete(item)">
           <view slot="content">
             <view class="i-swipeout-des">
               <img :src="item.avatar"/>
@@ -35,13 +35,6 @@ import Me from "../me/index";
             fontsize : '20',
             width : 90,
             background : '#ed3f14'
-          },
-          {
-            name : '取消',
-            width : 90,
-            color : '#80848f',
-            fontsize : '20',
-            icon : 'undo'
           }
         ],
         page: 1,
@@ -56,12 +49,42 @@ import Me from "../me/index";
       })
     },
     onLoad: function () {
-      this.$fly.post(`/message/getAllDialogueInfo?page=${this.page}&&pageSize=${this.pageSize}`)
-        .then(res => {
-          this.dialogueList = res.data.data
-        })
+      this.getAll()
     },
     methods: {
+      // 获取所有对话记录
+      getAll () {
+        this.$fly.post(`/message/getAllDialogueInfo?page=${this.page}&&pageSize=${this.pageSize}`)
+          .then(res => {
+            this.dialogueList = res.data.data
+          })
+      },
+      // 删除某条对话记录
+      handleDelete (item) {
+        wx.showModal({
+          title: '提示',
+          content: '确定删除该对话吗？',
+          success: res => {
+            if (res.confirm) {
+              this.$fly.post(`/message/deleteDialogueInfo?id=${item.id}`)
+                .then(res => {
+                  wx.showToast({
+                    icon: "none",
+                    title: "删除成功",
+                    duration: 2000
+                  })
+                  this.getAll()
+                })
+            } else if (res.cancel) {
+              wx.showToast({
+                icon: "none",
+                title: "取消删除",
+                duration: 2000
+              })
+            }
+          }
+        })
+      },
       // 进入到聊天界面
       dialogue (item, index) {
         this.dialogueIndex = index

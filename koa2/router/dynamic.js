@@ -60,7 +60,8 @@ module.exports = router.get('/getAllIncludesComments', async (ctx) => {
         item.comments = [];
         promiseGroup.push(baseService.getByFields('comment', {
             request: {
-                body: {
+                query: {
+                    page: ctx.request.query.page,
                     dynamic_id: item.id,
                 }
             }
