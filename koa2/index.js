@@ -10,7 +10,14 @@ const server = require('koa-static')
 const ioServer = require('http').Server(app)
 const io = require('socket.io')(ioServer)
 const socketFunc = require('./server/socket/webSocket')
+const sslify = require('koa-sslify').default;
+const https = require('https');
+const fs = require('fs');
 
+// 程序遇到未捕获异常将不会结束进程
+process.on('uncaughtException', function (err) {
+    console.log('Caught exception: ' + err);
+});
 // 获取前端对象
 app.use(bodyparse())
 // 跨域
@@ -25,15 +32,17 @@ app.use(router.routes()).use(router.allowedMethods())
 io.on('connection', (socket) => {
     socketFunc(socket)
 })
-// app端口
-app.listen({ port: config.port }, () =>
-    console.log(`🚀 Server ready at http://localhost:${config.port}`),
-)
 // websocket 端口
 ioServer.listen(config.wsPort, () => {
     console.log(`🚀 WebSocket Server is running at http://localhost:${config.wsPort}`)
 })
-// 程序遇到未捕获异常将不会退出
-process.on('uncaughtException', function (err) {
-    console.log('Caught exception: ' + err);
-});
+// 搭建https服务器
+app.use(sslify());
+const certOption = {
+    key: fs.readFileSync('./server/cert/3_www.wjxweb.cn.key'),
+    pem: fs.readFileSync('./server/cert/2_www.wjxweb.cn.pem')
+}
+let httpsServer = https.createServer(certOption, app.callback());
+httpsServer.listen(config.port, () => {
+    console.log(`🚀 Server ready at http://localhost:${config.port}`)
+})

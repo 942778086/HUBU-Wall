@@ -6,7 +6,6 @@ const demand = require('./demand')
 const upload = require('./upload')
 const comment = require('./comment')
 const message = require('./message')
-const demand = require('./demand')
 
 router.get('/', (ctx, next) => {
     ctx.body = "Welcome to HUBU-WALL"
