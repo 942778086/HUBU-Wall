@@ -20,8 +20,8 @@
       </div>
 
       <div class="btn_div" :style="btnDivStyle">
-        <div @click="contactSeller" class="btn contact">联系卖家</div>
-        <div @click="purchase" class="btn purchase">立即购买</div>
+        <div @click="contactSeller" class="btn contact">联系{{ demand_kind }}</div>
+        <div @click="purchase" class="btn purchase">立即{{ demand_behave}}</div>
       </div>
     </div>
   </div>
@@ -35,6 +35,8 @@ export default {
       avatar: '',
       detailsAndPriceStyle: '',
       btnDivStyle: '',
+      demand_kind: '',
+      demand_behave: ''
     }
   },
   created () {
@@ -44,10 +46,19 @@ export default {
   onLoad: function (options) {
     this.querys = JSON.parse(options.item)
     this.avatar = options.avatar
+    if (this.querys.demand_kind == '租房') {
+      this.demand_kind = '房主'
+      this.demand_behave = '租房'
+    } else if (this.querys.demand_kind == '二手书' || this.querys.demand_kind == '闲置物') {
+      this.demand_kind = '卖家'
+      this.demand_behave = '购买'
+    }
   },
   methods: {
-    purchase (item) {
-      
+    purchase () {
+      wx.navigateTo({
+        url:`/pages/demand/address/main`
+      })
     },
     contactSeller () {
       wx.navigateTo({

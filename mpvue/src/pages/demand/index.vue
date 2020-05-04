@@ -6,41 +6,54 @@
       <swiper indicator-dots="true" autoplay="true" interval="2000" duration="500">
         <swiper-item>
           <view class="swiper-item">
-            <img class="banner-img" mode="heightFix" src="../../../static/images/header.png" />
+            余生还长，你别慌<br>
+            别回头，别纠缠，别念旧<br>
+            ——余华《活着》
           </view>
         </swiper-item>
         <swiper-item>
-          <view class="swiper-item">广告位招租</view>
+          <view class="swiper-item">
+            也许你感觉自己的务力总是徒劳无功<br>
+            但不必怀疑你每天都离顶点更近一步<br>
+            ——尼采《漂泊者及其影子》
+          </view>
         </swiper-item>
         <swiper-item>
-          <view class="swiper-item">广告位招租</view>
+          <view class="swiper-item">
+            你，不要挤<br>
+            世界这么大，它容纳的了我，也容纳的了你<br>
+            ——狄更斯《你，不要挤》
+          </view>
         </swiper-item>
       </swiper>
     </div>
     <div class="demand-kind">
-      <div class="demand-kind-item" @click="navDemandKind(2, 'cardLayout')">
+      <div class="demand-kind-item" @click="navDemandKind('闲置物', 'cardLayout')">
         <img class="demand-kind-icon" src="../../../static/images/parcle.png" />
         <p>闲置物</p>
       </div>
-      <div class="demand-kind-item" @click="navDemandKind(1, 'cardLayout')">
+      <div class="demand-kind-item" @click="navDemandKind('二手书', 'cardLayout')">
         <img class="demand-kind-icon" src="../../../static/images/shareTheBill.png" />
         <p>二手书</p>
       </div>
-      <div class="demand-kind-item" @click="navDemandKind(3, 'cardLayout')">
-        <img class="demand-kind-icon" src="../../../static/images/resource.png" />
+      <div class="demand-kind-item" @click="navDemandKind('租房', 'cardLayout')">
+        <img class="demand-kind-icon" src="../../../static/images/renting.png" />
         <p>租房</p>
       </div>
     </div>
     <div class="homepage-demand">
-      <div class="homepage-demand-item" v-for="(item, index) in homepageList" :key="index">
+      <div class="homepage-demand-item" v-for="(item, index) in demands" :key="index" @click="queryDetails(item)">
         <div class="img-room">
-          <img :src="item.img_url" mode="widthFix" class="demand-item-img" />
+          <img :src="item.img_url[0]" mode="widthFix" class="demand-item-img" />
         </div>
         <div class="info-room">
           <p class="detail">{{ item.details }}</p>
           <div class="publisher">来自{{ item.publisher_name }}</div>
           <div v-if="item.price == 0" class="price-free">FREE</div>
-          <div v-else class="price">￥{{ item.price }}</div>
+          <div v-else class="price">
+              ￥{{ item.price }}
+              <button class="delete_btn" @click.stop="deleteDemand(item)"></button>
+          </div> 
           <div class="time">{{ item.date }}</div>
         </div>
       </div>
@@ -51,36 +64,61 @@
 <script>
 import Me from "../me/index";
 import LeadLogin from "../../components/leadLogin/index";
-import { formatDateFriendly } from "../../utils/formatDatetime";
+import { transferStandardToBeijingTime } from "@/utils/formatDatetime";
 
 export default {
   components: { Me, LeadLogin },
   data() {
     return {
-      homepageList: [
-        {
-          img_url:
-            "https://wjxcloud-1258315462.cos.ap-guangzhou.myqcloud.com/wx9122a6cd0208fd3f.o6zAJszYgZqTqQaMLlu5mEiTpX08.EifU26R0OlDB00e4f6786d5b14dc640e6ac5e790cc36.jpg",
-          date: formatDateFriendly(new Date()),
-          publisher_name: "wujianx",
-          publisher_id: "20",
-          price: "4",
-          details: "帮我带早饭，要三期后面的那个啥卖的那个叫啥啥啥的面包"
-        },
-        {
-          img_url:
-            "https://wjxcloud-1258315462.cos.ap-guangzhou.myqcloud.com/wx9122a6cd0208fd3f.o6zAJszYgZqTqQaMLlu5mEiTpX08.XxVNg9OtBFti61576a7a85f07b37ff5ef39de7201852.jpg",
-          date: formatDateFriendly(new Date()),
-          publisher_name: "wujianx",
-          publisher_id: "20",
-          price: "",
-          details: "有没有人知道这个画的出处啊"
-        }
-      ]
-    };
+      demands: [],
+      page: 1,
+      pageSize: 6
+    }
   },
-  created() {},
+  created () {
+    this.getAll(this.page)
+  },
+  onReachBottom: function() {
+    if (this.demands.length % 6 == 0){
+      // 这个地方逻辑不完善，取余为0，可能接下来还有数据，可能接下来没有数据了,这个后面完善
+      this.page++
+      this.getAll(this.page)
+    } else {
+      // 如果对6取余不为0，则一定无更多的数据
+      wx.showToast({
+        icon: "none",
+        title: "无更多数据",
+        duration: 2000
+      })
+    }
+  },
   methods: {
+    getAll (page) {
+      this.$fly.get(`/demand/getDemandByDemandKind?is_deal=${0}&&pageSize=6&&page=${page}`)
+        .then(res => { 
+          res.data.forEach(item => {
+            if (!item.img_url) {
+              item.img_url = []
+            }
+            if (item.img_url.indexOf(",") > 0) {
+              item.img_url = item.img_url.split(",")
+            } else {
+              item.img_url = [item.img_url]
+            }
+            item.date = transferStandardToBeijingTime(item.date)
+          })
+          this.demands = this.demands.concat(res.data)
+        })
+    },
+    queryDetails (item) {
+      // 根据publisher_id拿到发布者的头像，传递过去
+      this.$fly.get(`/user/getUser?id=${item.publisher_id}`)
+        .then(res =>{
+          wx.navigateTo({
+            url:`/pages/demand/details/main?item=${JSON.stringify(item)}&&avatar=${res.data[0].avatar}`
+          })
+        })
+    },
     navDemandKind(demandKind, isList) {
       wx.navigateTo({
         url: `/pages/demand/${isList}/main?demand_kind=${demandKind}`
@@ -105,6 +143,9 @@ export default {
 }
 .swiper-item {
   text-align: center;
+  font-family: "Arial","Microsoft YaHei","黑体","宋体",sans-serif;
+  font-size: 18px;
+  padding-top: 20px;
 }
 .demand-kind {
   display: flex;
