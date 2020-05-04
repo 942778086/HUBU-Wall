@@ -133,7 +133,7 @@
           <input
             class="comment-input child-comment-input"
             @input="changeChildComment"
-            :placeholder="'回复' + lastClickComment.creator"
+            :placeholder="'回复' + lastClickComment.commentor"
           />
           <button style="width: 20%;" class="send-comment-btn" @click="sendChildComment();">发送</button>
         </div>

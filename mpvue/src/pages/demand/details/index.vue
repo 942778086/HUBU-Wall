@@ -18,11 +18,11 @@
         </div>
         
       </div>
+    </div>
 
-      <div class="btn_div" :style="btnDivStyle">
-        <div @click="contactSeller" class="btn contact">联系{{ demand_kind }}</div>
-        <div @click="purchase" class="btn purchase">立即{{ demand_behave}}</div>
-      </div>
+    <div class="btn_div" :style="btnDivStyle">
+      <div @click="contactSeller" class="btn contact">联系{{ demand_kind }}</div>
+      <div @click="purchase" class="btn purchase">立即{{ demand_behave}}</div>
     </div>
   </div>
 </template>
@@ -61,9 +61,17 @@ export default {
       })
     },
     contactSeller () {
-      wx.navigateTo({
-        url:`/pages/conversation/dialogue/main?receive_id=${this.querys.publisher_id}&&name=${this.querys.publisher_name}&&avatar=${this.avatar}`
-      })
+      if (this.querys.publisher_id == this.$store.state.userInfo.id) {
+        wx.showToast({
+          icon: "none",
+          title: "该记录由本人发布",
+          duration: 2000
+        })
+      } else {
+        wx.navigateTo({
+          url:`/pages/conversation/dialogue/main?receive_id=${this.querys.publisher_id}&&name=${this.querys.publisher_name}&&avatar=${this.avatar}`
+        })
+      }
     }
   }
 }
@@ -94,8 +102,9 @@ export default {
   font-size: 20px;
 }
 .btn_div{
-  position: fixed;
-  height: 60px;
+  position: absolute;
+  top: 89.5%;
+  height: 10.5%;
   border-top: 1px solid lightgray;
   text-align:center;
 }

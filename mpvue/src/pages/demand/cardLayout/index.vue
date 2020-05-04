@@ -414,10 +414,11 @@ input{
 }
 .delete_btn{
     width: 14px;
-    height: 27px;
+    height: 28px;
     float: right;
     background-image: url('../../../../static/images/delete2.png');
-    background-size: cover;
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 .delete_btn::after{
     content: '';
