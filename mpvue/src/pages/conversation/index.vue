@@ -55,9 +55,9 @@ import Me from "../me/index";
     methods: {
       // 获取所有对话记录
       getAll () {
-        this.$fly.post(`/message/getAllDialogueInfo?page=${this.page}&&pageSize=${this.pageSize}`)
+        this.$fly.post(`/message/getAllDialogueInfo?page=${this.page}&&pageSize=${this.pageSize}&&send_id=${this.$store.state.userInfo.id}`)
           .then(res => {
-            this.dialogueList = res.data.data
+            this.dialogueList = res.data
           })
       },
       // 删除某条对话记录

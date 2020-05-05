@@ -3,13 +3,13 @@ const baseController = require('../server/common/baseController')
 const messageController = require('../server/controller/messageController')
 
 /**
- * 新建message
+ * 新建一条聊天信息
  * @type {Router}
  */
 module.exports = router.post('/newMessage', (ctx) => { return baseController.addRecord('message', ctx) })
 
 /**
- * 查询message
+ * 查询某sender与某receiver的message消息
  * @type {Router}
  */
 module.exports = router.post('/getAll', (ctx) => { return messageController.getAll('message', ctx) })
@@ -21,16 +21,18 @@ module.exports = router.post('/getAll', (ctx) => { return messageController.getA
 module.exports = router.post('/getChatByFileds', (ctx) => { return baseController.getByFields('message', ctx) })
 
 /**
- * 新建dialogueInfo
+ * 新建一条对话记录
  * @type {Router}
  */
-module.exports = router.post('/newDialogueInfo', (ctx) => { return messageController.addRecord('dialogueInfo', ctx) })
+module.exports = router.post('/newDialogueInfo', (ctx) => { 
+    return messageController.addRecord('dialogueInfo', ctx) })
 
 /**
- * 查询所有dialogueInfo
+ * 获取某sender与所有receiver的对话记录信息
  * @type {Router}
  */
-module.exports = router.post('/getAllDialogueInfo', (ctx) => { return baseController.getAll('dialogueInfo', ctx) })
+module.exports = router.post('/getAllDialogueInfo', (ctx) => { return messageController.getAllDialogueInfo('dialogueInfo', ctx)
+ })
 
 /**
  * 根据id删除特定dialogueInfo
