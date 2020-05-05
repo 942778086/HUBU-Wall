@@ -142,6 +142,8 @@ export default {
   height: 145px;
 }
 .swiper-item {
+  color: gray;
+  font-weight: bold;
   text-align: center;
   font-family: "Arial","Microsoft YaHei","黑体","宋体",sans-serif;
   font-size: 18px;

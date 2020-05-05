@@ -87,7 +87,9 @@
                   :key="commentIndex"
                 >
                   <div
-                    @click="clickComment(item, commentItem)"
+                    @click="clickComment({
+                      item: item, commentItem: commentItem
+                    })"
                   >{{ commentItem.commentor }} : {{ commentItem.content }}</div>
                   <div
                     class="childComment"
@@ -95,7 +97,9 @@
                     :key="childIndex"
                   >
                     <div
-                      @click="clickComment(item, commentItem)"
+                      @click="clickComment({
+                        item: item, commentItem: commentItem, childComment: childComment
+                      })"
                     >{{childComment.commentor}}回复{{ childComment.replayer }}: {{ childComment.content }}</div>
                   </div>
                 </div>
@@ -133,7 +137,7 @@
           <input
             class="comment-input child-comment-input"
             @input="changeChildComment"
-            :placeholder="'回复' + lastClickComment.commentor"
+            :placeholder="placeholder"
           />
           <button style="width: 20%;" class="send-comment-btn" @click="sendChildComment();">发送</button>
         </div>
@@ -159,7 +163,9 @@ export default {
       userId: 0,
       deleteId: 0,
       lastClickDynamic: {},
-      lastClickComment: {}
+      lastClickComment: {},
+      lastClickChildComment: {},
+      placeholder: ""
     };
   },
   components: { Me },
@@ -254,10 +260,16 @@ export default {
     /**
      * 评论点击后，更新lastClickComment，用于保存状态
      */
-    clickComment(dynamic, comment) {
-      this.lastClickDynamic = dynamic;
-      this.lastClickComment = comment;
+    clickComment(args) {
+      this.lastClickDynamic = args.item;
+      this.lastClickComment = args.commentItem;
+      this.lastClickChildComment = args.childComment || {};
       this.showCommentAction = true;
+      if (this.lastClickChildComment.hasOwnProperty('commentor')) {
+        this.placeholder = `回复：${this.lastClickChildComment.commentor}`
+      } else {
+        this.placeholder = `回复：${this.lastClickComment.commentor}`
+      }
     },
     /**
      * 发送根评论
@@ -293,6 +305,11 @@ export default {
     sendChildComment() {
       let comment = this.lastClickComment;
       let dynamic = this.lastClickDynamic;
+      let childComment = this.lastClickChildComment || { id: null };
+      let commentor =
+        childComment.dynamic_id === comment.dynamic_id
+          ? childComment.commentor
+          : comment.commentor;
       this.$fly
         .put("/dynamic/editDynamic", {
           id: comment.dynamic_id,
@@ -305,12 +322,13 @@ export default {
           parent_id: comment.id,
           type: "",
           commentor: this.$store.state.userInfo.nick_name,
-          replayer: comment.commentor,
+          replayer: commentor,
           content: this.childCommentMap.get(comment.id),
           gmt_create: formatDatetime(new Date())
         })
         .then(res => {
           this.showCommentAction = false;
+          this.childCommentMap.set(this.lastClickComment.id, "");
           $Message({
             content: "评论成功",
             type: "success"
