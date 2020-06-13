@@ -3,6 +3,7 @@
     "i-progress": "../../../../static/iview/progress/index",
     "i-switch": "../../../../static/iview/switch/index",
     "i-input": "../../../../static/iview/input/index",
-    "i-button": "../../../../static/iview/button/index"
+    "i-button": "../../../../static/iview/button/index",
+    "i-card": "../../../../static/iview/card/index"
   }
 }

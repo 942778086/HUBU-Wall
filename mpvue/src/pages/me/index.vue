@@ -4,6 +4,12 @@
       <div class="avator" @click="showInfoList">
         <image class="avator" v-if="waitData" :src="avatorUrl" />
       </div>
+      <div class="plant-room">
+        <img class="icon" src="../../../static/images/green/绿植6.png" />
+        <img class="icon" src="../../../static/images/green/绿植7.png" />
+        <img class="icon" src="../../../static/images/green/绿植16.png" />
+        <img class="icon" src="../../../static/images/green/绿植19.png" />
+      </div>
     </div>
     <drawer v-if="drawerVsible" @closeDrawer="closeDrawer"></drawer>
   </div>
@@ -59,16 +65,16 @@ export default {
   display: flex;
   top: 0;
   width: 100%;
-  height: 50px;
-  flex-direction: column;
-  justify-content: center;
+  height: 52px;
+  flex-direction: row;
+  /* justify-content: center; */
   border-bottom: 1px solid gray;
   background-color: rgb(241, 241, 241);
   z-index: 999;
 }
 .avator {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   border: 1px solid rgb(46, 138, 33);
 }
@@ -76,5 +82,14 @@ export default {
   width: 260px;
   height: 1000px;
   padding: 10px;
+}
+.plant-room {
+  position: absolute;
+  right: 0;
+}
+.icon {
+  width: 50px;
+  height: 50px;
+  margin: 0 3px 0 3px;
 }
 </style>

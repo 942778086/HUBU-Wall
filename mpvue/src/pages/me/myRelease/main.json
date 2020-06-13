@@ -1,0 +1,6 @@
+{
+    "usingComponents": {
+      "i-card": "../../../../static/iview/card/index"
+    }
+  }
+  

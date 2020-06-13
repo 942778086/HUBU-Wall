@@ -15,6 +15,13 @@
           <i-cell title="关于我们" @click="nav('aboutUs')" is-link></i-cell>
         </i-cell-group>
       </div>
+      <div class="flower-room">
+        <img class="icon" src="../../../static/images/green/绿植16.png" />
+        <img class="icon" src="../../../static/images/green/绿植19.png" />
+        <img class="icon" src="../../../static/images/green/绿植6.png" />
+        <img class="icon" src="../../../static/images/green/绿植7.png" />
+        <img class="icon" src="../../../static/images/green/绿植19.png" />
+      </div>
     </div>
     <div class="drawer-maskerlayer" @click="closeDrawer"></div>
   </div>
@@ -99,6 +106,18 @@ export default {
 }
 .info-list {
   padding: 10px;
+}
+.flower-room {
+  margin: 30px 5px 0 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: #7292e98f;
+  border-radius: 15px;
+}
+.icon {
+  width: 50px;
+  height: 50px;
 }
 </style>
 <style>
