@@ -40,6 +40,18 @@
         <img class="demand-kind-icon" src="../../../static/images/renting.png" />
         <p>租房</p>
       </div>
+      <div class="demand-kind-item" @click="navDemandKind('代拿快递', 'cardLayout')">
+        <img class="demand-kind-icon" src="../../../static/images/parcle.png" />
+        <p>代拿快递</p>
+      </div>
+      <div class="demand-kind-item" @click="navDemandKind('技术处理', 'cardLayout')">
+        <img class="demand-kind-icon" src="../../../static/images/shareTheBill.png" />
+        <p>技术处理</p>
+      </div>
+      <div class="demand-kind-item" @click="navDemandKind('其他', 'cardLayout')">
+        <img class="demand-kind-icon" src="../../../static/images/renting.png" />
+        <p>其他</p>
+      </div>
     </div>
     <div class="homepage-demand">
       <div class="homepage-demand-item" v-for="(item, index) in demands" :key="index" @click="queryDetails(item)">
