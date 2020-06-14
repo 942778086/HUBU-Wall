@@ -1,4 +1,5 @@
 const baseDao = require('./baseDao')
+const verify = require('../verify/verify')
 
 module.exports = baseService = {
     /**
@@ -80,19 +81,19 @@ module.exports = baseService = {
      * @returns {Promise<unknown>}
      */
     async addRecord(tableName, ctx) {
-        let keysArr = Object.keys(ctx.request.body)
-        let valuesArr = [];
-        for (const property in ctx.request.body) {
-            let prop = ctx.request.body[property]
-            if (typeof (prop) === 'string') {
-                valuesArr.push('\'' + prop + '\'')
-            } else {
-                valuesArr.push(prop)
+            let keysArr = Object.keys(ctx.request.body)
+            let valuesArr = [];
+            for (const property in ctx.request.body) {
+                let prop = ctx.request.body[property]
+                if (typeof (prop) === 'string') {
+                    valuesArr.push('\'' + prop + '\'')
+                } else {
+                    valuesArr.push(prop)
+                }
             }
-        }
-        const keys = keysArr.join(',')
-        const values = valuesArr.join(',')
-        return baseDao.addRecord(keys, values, tableName)
+            const keys = keysArr.join(',')
+            const values = valuesArr.join(',')
+            return baseDao.addRecord(keys, values, tableName)
     },
     /**
      * 修改记录
@@ -131,6 +132,25 @@ module.exports = baseService = {
      */
     async deleteById(id, tableName) {
         return baseDao.deleteById(id, tableName)
+    },
+    /** 
+     * 检查文本是否包含违规内容
+     * @param {*} text
+    */
+    async checkLabel(appid, appsecret, content) {
+        return new Promise(async (resolve, reject) =>{
+            let access_token = ''
+            let verifyResult = {}
+            verifyResult = await verify.verifyContext(appid, appsecret, access_token, content)
+            let isLegal = true
+            if (verifyResult.errcode == 0) {
+                // 不含违规内容
+                isLegal = true
+            }  else if (verifyResult.errcode == 87014) {
+                // 含违规内容
+                isLegal = false
+            }
+            resolve(isLegal)
+        })
     }
-
 }

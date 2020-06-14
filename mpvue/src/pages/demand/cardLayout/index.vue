@@ -189,6 +189,7 @@ export default {
             this.price = ''
             this.pictures = []
         },
+        // 发布新的需求
         publish () {
             if (this.regularPrice(this.price)) {
                 this.$fly.post('/demand/newDemand', {
@@ -213,6 +214,12 @@ export default {
                             this.demands = []
                             this.getAll(this.page)
                             this.topPublishBtnStyle = 'background: A2C6E7;color: snow;'
+                        } else if (res.data == '内容违规') {
+                             wx.showToast({
+                                icon: "none",
+                                title: "发布的信息中含有违法违规内容，发布失败",
+                                duration: 2000
+                            })
                         } else {
                             wx.showToast({
                                 icon: "none",
@@ -298,7 +305,7 @@ export default {
     margin: 10px 10px 0px 10px;
     font-size: 25px;
     font-weight: bolder;
-    letter-spacing: 30px;
+    letter-spacing: 20px;
     text-indent: 30px;
     transition: color 0.4s linear;
     position: fixed;
