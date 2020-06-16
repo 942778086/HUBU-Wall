@@ -1,11 +1,10 @@
 const router = require('koa-router')()
-const user = require('./user')
-const login = require('./login')
-const dynamic = require('./dynamic')
-const demand = require('./demand')
-const upload = require('./upload')
-const comment = require('./comment')
-const message = require('./message')
+const user = require('../src/controller/userController')
+const login = require('../src/controller/loginController')
+const dynamic = require('../src/controller/dynamicController')
+const demand = require('../src/controller/demandController')
+const comment = require('../src/controller/commentController')
+const message = require('../src/controller/messageController')
 
 router.get('/', (ctx, next) => {
     ctx.body = "Welcome to HUBU-WALL"
@@ -17,8 +16,5 @@ router.use('/dynamic', dynamic.routes(), dynamic.allowedMethods())
 router.use('/comment', comment.routes(), comment.allowedMethods())
 router.use('/demand', demand.routes(), demand.allowedMethods())
 router.use('/message', message.routes(), message.allowedMethods())
-router.post('/upload/ava', (ctx, next) => {
-    return upload(ctx, next)
-})
 
 module.exports = router

@@ -1,6 +1,6 @@
 const router = require('koa-router')()
-const baseController = require('../server/common/baseController')
-const baseService = require('../server/common/baseService')
+const baseController = require('../common/baseController')
+const baseService = require('../common/baseService')
 
 /**
  * 列表查询
@@ -81,3 +81,4 @@ module.exports = router.get('/getAllIncludesComments', async (ctx) => {
     })
     ctx.body = dynamics;
 })
+

@@ -1,18 +1,12 @@
 const router = require('koa-router')()
 const https = require('https')
-const dao = require('../server/common/baseDao')
-const query = require('../server/db')
-
-const appid = "wx9122a6cd0208fd3f"  //开发者的appid
-const appsecret = "e7fc57c6644aedd7edf5c3aee486a550"   //开发者的appsecret 登入小程序公共平台内查看
+const dao = require('../common/baseDao')
+const baseController = require('../common/baseController')
+const config = require('../../config')
 
 // 添加用户
-module.exports = router.post('/newUser', async (ctx, next) => {
-    const params = ctx.request.body
-    await query(`insert into user(nick_name,avatar,wx_id,user_new_login,phone_num,student_num,gender,city,province) values('${params.nickName}','${params.avatar}','${params.wxId}','${params.userNewLogin}','${params.phoneNum}','${params.studentNum}','${params.gender}','${params.city}','${params.province}');`)
-    ctx.body = {
-        message: '添加用户成功'
-    }
+module.exports = router.post('/newUser', (ctx, next) => {
+    return baseController.addRecord('user', ctx)
 })
 
 /**
@@ -23,7 +17,7 @@ module.exports = router.post('/newUser', async (ctx, next) => {
  */
 module.exports = router.get('/getOpenId', async (ctx, next) => {
     const code = ctx.query.code;
-    const url = `https://api.weixin.qq.com/sns/jscode2session?appid=${appid}&secret=${appsecret}&js_code=${code}&grant_type=authorization_code`;
+    const url = `https://api.weixin.qq.com/sns/jscode2session?appid=${config.appid}&secret=${config.appsecret}&js_code=${code}&grant_type=authorization_code`;
     let p = await new Promise((resolve, reject) => {
         https.get(url, async res => {
             let rawData = "";
@@ -32,6 +26,8 @@ module.exports = router.get('/getOpenId', async (ctx, next) => {
                 let openId = JSON.parse(rawData.toString()).openid;
                 try {
                     let dbres = await dao.selectByFields(1, "user", `wx_id="${openId}"`);
+                    // 如果dbres的长度为0，说明数据库里面没有这个user，返回前端的数据为openId
+                    // 如果dbres的长度不为0，说明数据库里面有这个user，返回前端的数据为这个user的信息
                     ctx.body = dbres.length === 0 ? openId : dbres[0];
                     resolve();
                 } catch (e) {
