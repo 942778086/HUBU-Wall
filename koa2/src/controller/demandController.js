@@ -1,9 +1,7 @@
 const router = require('koa-router')()
-const baseController = require('../server/common/baseController')
-const baseService = require('../server/common/baseService')
-const appid = "wx9122a6cd0208fd3f"  //开发者的appid
-const appsecret = "e7fc57c6644aedd7edf5c3aee486a550"   //开发者的appsecret 登入小程序公共平台内查看
-
+const baseController = require('../common/baseController')
+const baseService = require('../common/baseService')
+const config = require('../../config')
 
 /**
  * 列表查询
@@ -29,7 +27,7 @@ module.exports = router.get('/getDemandByDemandKind', (ctx) => {
  */
 module.exports = router.post('/newDemand', (ctx) => {
     const content = ctx.request.body.details
-    baseService.checkLabel(appid, appsecret, content)
+    return baseService.checkLabel(config.appid, config.appsecret, content)
     .then(isLegal => {
         if (isLegal) {
             // 不含违规内容

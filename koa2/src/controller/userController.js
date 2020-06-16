@@ -1,5 +1,6 @@
 const router = require('koa-router')()
-const baseController = require('../server/common/baseController')
+const baseController = require('../common/baseController')
+
 
 /**
  * 列表查询

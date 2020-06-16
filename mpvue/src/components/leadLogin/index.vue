@@ -42,7 +42,7 @@ export default {
                   console.log(res.data);
                   wx.showToast({
                     icon: "none",
-                    title: "登录成功",
+                    title: "登录成功,欢迎体验！",
                     duration: 2000
                   });
                 }
@@ -59,6 +59,7 @@ export default {
       this.showLoginSheet = false;
       wx.getSetting({
         success: res => {
+          // 判断之前有没有授权：之前授权过了
           if (res.authSetting["scope.userInfo"]) {
             wx.getUserInfo({
               success: res => {
@@ -66,6 +67,7 @@ export default {
               }
             });
           } else {
+            // 判断之前有没有授权：之前没有授权--->强制授权
             wx.authorize({
               scope: "scope.userInfo",
               success(res) {
@@ -95,23 +97,33 @@ export default {
       const userNewLogin = formatDatetime(date);
       this.$fly
         .post("/login/newUser", {
-          nickName: userInfo.nickName,
+          nick_name: userInfo.nickName,
           avatar: userInfo.avatarUrl,
-          wxId: this.openId,
-          userNewLogin: userNewLogin,
-          phoneNum: "",
-          studentNum: "",
+          wx_id: this.openId,
+          user_new_login: userNewLogin,
+          phone_num: "",
+          student_num: "",
           gender: userInfo.gender,
           city: userInfo.city,
           province: userInfo.province,
           socket_id: ""
         })
         .then(res => {
-          if (res.data.message === "添加用户成功") {
+          this.$store.state.userInfo = {
+            id: res.data.insertId,
+            nick_name: userInfo.nickName,
+            avatar: userInfo.avatarUrl,
+            wx_id: this.openId,
+            user_new_login: userNewLogin,
+            gender: userInfo.gender,
+            city: userInfo.city,
+            province: userInfo.province,
+          }
+          if (res.data.affectedRows === 1) {
             this.newWSConnect();
             wx.showToast({
               icon: "none",
-              title: "欢迎体验！",
+              title: "登录成功,欢迎体验！",
               duration: 2000
             });
           }

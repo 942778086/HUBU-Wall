@@ -29,7 +29,7 @@
     </div>
     <div class="demand-kind">
       <div class="demand-kind-item" @click="navDemandKind('闲置物', 'cardLayout')">
-        <img class="demand-kind-icon" src="../../../static/images/parcle.png" />
+        <img class="demand-kind-icon" src="../../../static/images/idle.png" />
         <p>闲置物</p>
       </div>
       <div class="demand-kind-item" @click="navDemandKind('二手书', 'cardLayout')">
@@ -45,11 +45,11 @@
         <p>代拿快递</p>
       </div>
       <div class="demand-kind-item" @click="navDemandKind('技术处理', 'cardLayout')">
-        <img class="demand-kind-icon" src="../../../static/images/shareTheBill.png" />
+        <img class="demand-kind-icon" src="../../../static/images/study.png" />
         <p>技术处理</p>
       </div>
       <div class="demand-kind-item" @click="navDemandKind('其他', 'cardLayout')">
-        <img class="demand-kind-icon" src="../../../static/images/renting.png" />
+        <img class="demand-kind-icon" src="../../../static/images/others.png" />
         <p>其他</p>
       </div>
     </div>

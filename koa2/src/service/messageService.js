@@ -6,7 +6,7 @@ const messageService = {
     /** 
      * @description 获取某sender与某receiver的所有message消息
     */
-    getAll: async function (tableName, ctx) {
+    async getAll (tableName, ctx) {
         let data = {}
         const send_id = ctx.request.query.send_id
         const receive_id = ctx.request.query.receive_id
@@ -16,7 +16,7 @@ const messageService = {
     /** 
      * @description 添加一条对话记录（不是具体的聊天信息）
     */
-    addRecord: async function (tableName, ctx) {
+    async addRecord (tableName, ctx) {
         let keysArr = Object.keys(ctx.request.body)
         let valuesArr = [];
         for (const property in ctx.request.body) {
@@ -48,7 +48,7 @@ const messageService = {
     /** 
      * @description 获取某sender与所有receiver的对话记录信息
     */
-    getAllDialogueInfo: async function (tableName, ctx) {
+    async getAllDialogueInfo (tableName, ctx) {
         let sendOrReceive_id = ctx.request.query.send_id
         return messageDao.getAllDialogueInfo(tableName, sendOrReceive_id)
     }
