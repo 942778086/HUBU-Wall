@@ -137,11 +137,11 @@ module.exports = baseService = {
      * 检查文本是否包含违规内容
      * @param {*} text
     */
-    async checkLabel(appid, appsecret, content) {
+    async checkLabel(content) {
         return new Promise(async (resolve, reject) =>{
             let access_token = ''
             let verifyResult = {}
-            verifyResult = await verify.verifyContext(appid, appsecret, access_token, content)
+            verifyResult = await verify.verifyContext(access_token, content)
             let isLegal = true
             if (verifyResult.errcode == 0) {
                 // 不含违规内容

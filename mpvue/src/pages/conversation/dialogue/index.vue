@@ -50,14 +50,15 @@ export default {
     this.$socket.on("connect", function () {
       console.log("connected successfully")  
     })
-    this.$socket.on("res", (data) => {
-      this.chatList = data.data
-      this.toLast = `item${this.chatList.length}`
-      wx.setTabBarBadge({
-        index: 1,
-        text: '1'
-      })
-    })
+    // 写在这里语意不清晰，让人难以理解
+    // this.$socket.on("res", (data) => {
+    //   this.chatList = data.data
+    //   this.toLast = `item${this.chatList.length}`
+    //   wx.setTabBarBadge({
+    //     index: 1,
+    //     text: '1'
+    //   })
+    // })
   },
   onLoad (options) {
     this.querys = options
@@ -69,6 +70,8 @@ export default {
     this.user_id = this.$store.state.userInfo.id
   },
   onUnload () {
+    // 这个函数有问题！！！！
+    console.log('chatList:',this.chatList)
     // 怎么判断是新增还是更新呢？后台有做判断
     this.$fly.post('/message/newDialogueInfo', {
       avatar: this.querys.avatar,
@@ -78,6 +81,7 @@ export default {
       send_id: this.$store.state.userInfo.id
     })
       .then(res => {
+        console.log('res:',res)
         this.$socket.emit('dialogueInfo',{id: this.$socket.id, page: 1, pageSize: 10, receive_id: this.querys.receive_id, send_id: this.$store.state.userInfo.id})
       })
   },
@@ -91,6 +95,7 @@ export default {
     getAllMessage () {
       this.$fly.post(`/message/getAll?send_id=${this.$store.state.userInfo.id}&&receive_id=${this.querys.receive_id}`)
         .then(res =>{
+          console.log('res:',res)
           this.chatList = res.data.data
           this.chatList.forEach(element => {
             element.date = transferStandardToBeijingTime(element.date)
@@ -105,7 +110,10 @@ export default {
         this.msg.receive_id = parseInt(this.querys.receive_id)
         this.msg.date = formatDatetime(new Date())
         this.$socket.emit("req", { id: this.$socket.id, msg: this.msg })
-        this.msg.content = "" 
+        this.msg.content = ""
+        this.$socket.on("res", (data) => {
+          this.chatList = data.data
+        })
       }
     }
   }

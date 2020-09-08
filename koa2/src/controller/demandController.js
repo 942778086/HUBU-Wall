@@ -1,7 +1,6 @@
 const router = require('koa-router')()
 const baseController = require('../common/baseController')
 const baseService = require('../common/baseService')
-const config = require('../../config')
 
 /**
  * 列表查询
@@ -27,7 +26,7 @@ module.exports = router.get('/getDemandByDemandKind', (ctx) => {
  */
 module.exports = router.post('/newDemand', (ctx) => {
     const content = ctx.request.body.details
-    return baseService.checkLabel(config.appid, config.appsecret, content)
+    return baseService.checkLabel(content)
     .then(isLegal => {
         if (isLegal) {
             // 不含违规内容

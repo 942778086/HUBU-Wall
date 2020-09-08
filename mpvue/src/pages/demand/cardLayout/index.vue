@@ -13,7 +13,7 @@
             </label>
         </div>
 
-        <div class="btn_div" v-if="showPublishDiv">
+        <div class="bottom_btn_div" v-if="showPublishDiv">
             <div @click="cancelPublish" class="buttom_cancel_btn btn" >取消</div>
             <div @click="publish" class="buttom_publish_btn btn" >发布</div>
         </div>
@@ -150,6 +150,7 @@ export default {
                 sizeType: ['original'], // 可以指定是原图还是压缩图，默认用原图
                 sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
                 success: function (res) {
+                    console.log('图片res： ',res)
                     const length = res.tempFiles.length
                     for(let i = 0; i < length; i++) {
                         const filePath = res.tempFiles[i].path
@@ -160,6 +161,7 @@ export default {
                             Key: filename,
                             FilePath: filePath,
                             onProgress: function (info) {
+                                console.log('info:',info)
                             }
                         }, function (err, data) {
                             const data1 = (err || data)
@@ -397,10 +399,10 @@ input{
   color: rgb(58, 190, 58);
   font-weight: bold;
 }
-.btn_div{
+.bottom_btn_div{
     text-align: center;
-    position: absolute;
-    top: 93%;
+    position: fixed;
+    bottom: 0%;
     width: 100%;
     height: 7%;
 }
