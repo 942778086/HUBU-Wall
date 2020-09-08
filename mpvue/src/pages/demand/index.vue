@@ -70,6 +70,7 @@
         </div>
       </div>
     </div>
+     <div v-if="isLoading" class="loading-text">数据加载中...</div>
   </div>
 </template>
 
@@ -84,13 +85,16 @@ export default {
     return {
       demands: [],
       page: 1,
-      pageSize: 6
+      pageSize: 6,
+      isLoading: true, // 数据是否正在加载中
+      noData: false,
     }
   },
   created () {
     this.getAll(this.page)
   },
   onReachBottom: function() {
+    if (this.noData) return
     if (this.demands.length % 6 == 0){
       // 这个地方逻辑不完善，取余为0，可能接下来还有数据，可能接下来没有数据了,这个后面完善
       this.page++
@@ -103,11 +107,21 @@ export default {
         duration: 2000
       })
     }
+    console.log('this.page:',this.page)
   },
   methods: {
     getAll (page) {
+      this.isLoading = true
       this.$fly.get(`/demand/getDemandByDemandKind?is_deal=${0}&&pageSize=6&&page=${page}`)
         .then(res => { 
+          console.log('res:',res)
+          if (res.data.length == 0) {
+            // 说明后面没数据了,取消下拉刷新
+            this.noData = true
+            this.isLoading = false
+            return
+          }
+          this.noData = false
           res.data.forEach(item => {
             if (!item.img_url) {
               item.img_url = []
@@ -120,6 +134,7 @@ export default {
             item.date = transferStandardToBeijingTime(item.date)
           })
           this.demands = this.demands.concat(res.data)
+          this.isLoading = false
         })
     },
     queryDetails (item) {
@@ -227,5 +242,9 @@ export default {
   font-size: 15px;
   color: rgb(58, 190, 58);
   font-weight: bold;
+}
+.loading-text{
+  font-size: 15px;
+  text-align: center;
 }
 </style>

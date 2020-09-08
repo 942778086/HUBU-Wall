@@ -3,9 +3,8 @@ const messageService = require('../service/messageService')
 const baseController = require('../common/baseController')
 
 /**
- * 新建一条聊天信息
+ * 新建一条聊天信息————该api暂时未用到，新建一条聊天信息是在webSocket中完成的
  * @type {Router}
- * 这个api其实没有用到，新建一条聊天信息是在webSocket中完成的
  */
 module.exports = router.post('/newMessage', (ctx) => { return baseController.addRecord('message', ctx) })
 
